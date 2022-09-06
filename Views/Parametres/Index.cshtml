@@ -1,0 +1,62 @@
+﻿@model IEnumerable<plateforme.Models.Parametre>
+
+@{
+    ViewData["Title"] = "Les paramètres de la plateforme";
+    Layout = "_LayoutSuperadmin";
+}
+
+
+
+<div class="card bg-transparent border-0">
+            
+            <div class="col-lg-12">
+                <div class="bg-mode p-4">
+                  <h1 class="h4 mb-4">Paramètres de la plateforme</h1>
+                  <!-- Blog item START -->
+                 <div style="height: 70vh; overflow: scroll;">
+                  <hr class="my-4">
+                  @foreach (var item in Model) {
+                    <div class="row">
+                        <div class="col-lg-4" style="font-weight: bold">
+                            @Html.DisplayFor(modelItem => item.Libelle)
+                        </div>
+            
+                        @if(item.Type=="fichier")
+                        {
+                            <div class="col-lg-4">
+                               <img src="@item.Valeur" alt="@item.Libelle" width="60" height="60" class="rounded-circle me-2">
+                            </div>
+                            <div class="col-lg-4">
+                                <a asp-action="EditFile" class="btn btn-primary-soft" asp-route-id="@item.Id">Modifier</a>
+                            </div>
+                        }
+                        else
+                        {
+                            @if(item.Id != "mailPassword")
+                            {
+                               <div class="col-lg-4">
+                                    @Html.DisplayFor(modelItem => item.Valeur)
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-lg-4">
+                                    <p>*************</p>
+                                </div>
+                            }
+
+                            <div class="col-lg-4">
+                                <a asp-action="Edit" class="btn btn-primary-soft" asp-route-id="@item.Id">Modifier</a>
+                            </div>
+                        }
+                
+                    </div>
+        
+                    <hr class="mb-4" />
+            }
+                </div>
+                </div>
+            </div>
+        </div>
+
+

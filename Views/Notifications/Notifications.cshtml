@@ -1,0 +1,95 @@
+﻿@model IEnumerable<plateforme.Models.DetailNotif>
+
+@{
+     ViewData["Title"] = "Mes contenus";
+    Layout = "_LayoutMembre";
+
+}
+
+
+
+        <div class="row g-4">
+      <!-- Main content START -->
+      <div class="col-lg-8 mx-auto">
+        <!-- Card START -->
+        <div class="card">
+          <div class="card-header py-3 border-0 d-flex align-items-center justify-content-between">
+            <h1 class="h5 mb-0">Notifications</h1>
+            <!-- Notification action START -->
+            <div class="dropdown">
+              <a href="#" class="text-secondary btn btn-secondary-soft-hover py-1 px-2" id="cardNotiAction" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+              </a>
+              <!-- Card share action dropdown menu -->
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cardNotiAction">
+                <li><a class="dropdown-item" asp-action="ToutLu" asp-controller="Membres"> <i class="bi bi-check2-all"></i>Marquer tout comme lu</a></li>
+                <li><a class="dropdown-item" asp-action="ToutSupprimer" asp-controller="Notifications"> <i class="bi bi-trash3"></i>Tout supprimer </a></li>
+              </ul>
+            </div>
+            <!-- Notification action END -->
+          </div>
+          <div class="card-body p-2">
+            <div class="list-unstyled">
+                 @foreach(var item in Model)
+                 {
+                     <hr class="mb-3" />
+                    @if(!item.Lu)
+                    {
+
+                      <!-- Notif item -->
+                      <div>
+                        <div class="rounded badge-unread d-sm-flex border-0 mb-1 p-3 position-relative">
+                           <!-- Avatar -->
+                          
+                          <!-- Info -->
+                          <div class="mx-sm-3 my-2 my-sm-0">
+                            <p class="small mb-2">@item.Notification.Description</p>
+                            
+                          </div>
+                          <!-- Action -->
+                          <div class="d-flex ms-auto">
+                            <p class="small me-5 text-nowrap">
+                               @item.AffichageDate()
+                            </p>
+                            <!-- Delete action START -->
+                                        <a class="dropdown-item" asp-route-id="@item.Id" asp-action="SupprimerNotif" asp-controller="Notifications"> <i class="bi bi-trash3"></i></a>
+                            <!-- Delete action END -->
+                          </div>
+                        </div>  
+                      </div>
+                    }
+                    else
+                    {
+                        <!-- Notif item -->
+                      <div>
+                        <div class="rounded d-sm-flex border-0 mb-1 p-3 position-relative">
+                           <!-- Avatar -->
+                          
+                          <!-- Info -->
+                          <div class="mx-sm-3 my-2 my-sm-0">
+                              <p href="#!" class="stretched-link small mb-0 text-secondary">
+                                  @item.Notification.Description
+                              </p>
+                              
+                          </div>
+                          <!-- Action -->
+                          <div class="d-flex ms-auto">
+                            <p class="small me-5 text-nowrap">
+                                @item.AffichageDate()
+                            </p>
+                            <!-- Delete action START -->
+                              <a class="dropdown-item" asp-route-id="@item.Id" asp-action="SupprimerNotif" asp-controller="Membres"> <i class="bi bi-trash3"></i></a>
+                            <!-- Delete action END -->
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  
+                    <hr class="mb-3" />
+                 }
+            </div>
+          </div>
+        </div>
+        <!-- Card END -->
+      </div>
+    </div> <!-- Row END -->

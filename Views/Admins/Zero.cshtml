@@ -1,0 +1,118 @@
+﻿@model plateforme.Models.Membre
+
+@{
+    ViewData["Title"] = "Remiseà zéro du compte";
+    Layout = "_LayoutSuperadmin";
+}
+
+
+ <div class="card bg-transparent border-0">
+            
+            <div class="col-lg-12">
+                <div class="bg-mode p-4">
+                  <h1 class="h4 mb-4">Remise à zéro du compte</h1>
+                  <form asp-action="Zero">
+                  
+                      <div class=" card-body" id="corps">
+                          <input asp-for="Id" type="hidden" />
+                          <input asp-for="DepartementId"  type="hidden" >
+                            <input asp-for="Username"  type="hidden" >
+                            <input asp-for="LastLogin"  type="hidden" >
+                            <input asp-for="Bio"  type="hidden" >
+                            <input asp-for="PhotoProfil"  type="hidden" >
+                            <input asp-for="Password"  type="hidden" >
+                            <input asp-for="Etat"  type="hidden" >
+                           
+                          <!-- Nom -->
+                        <div class="row mb-4">
+                          <div class="col-3">
+                            <label asp-for="Nom" class="control-label"></label>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Nom" class="form-control" value="@Model.Nom" readonly>
+                            <span asp-validation-for="Nom" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+                        <!-- Prenom -->
+                        <div class="row mb-4">
+                          <div class="col-3">
+                            <label asp-for="Prenom" class="control-label"></label>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Prenom" class="form-control" value="@Model.Prenom" readonly>
+                             <span asp-validation-for="Prenom" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+
+                        <!-- Adresse mail -->
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            <label asp-for="Mail" class="control-label"></label>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Mail" name="Mail" class="form-control" value="@Model.Mail" readonly>
+                             <span asp-validation-for="Mail" class="small text-danger"></span>
+                          </div>
+                        </div>
+                      
+
+                         <!-- Poste -->
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            <label asp-for="Poste" class="control-label"></label>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Poste" class="form-control"  value="@Model.Poste" readonly >
+                             <span asp-validation-for="Poste" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+                        <!-- Departement -->
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            <label asp-for="Departement" class="control-label"></label>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Departement" class="form-control"  value="@Model.Departement.NomDept" readonly >
+                            
+                             <span asp-validation-for="Departement" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+                        <!-- Profil-->
+                          <div class="row g-4 mb-4">
+                            <div class="col-lg-3">
+                              <label asp-for="Profil" class="control-label"></label>
+                            </div>
+                           
+                            <div class="col-8">
+                              <input asp-for="Profil" class="form-control"  value="@Model.Profil" readonly >
+                               <span asp-validation-for="Poste" class="small text-danger"></span>
+                            </div>
+                          </div>
+                         
+
+                        <!-- Button  -->
+
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            
+                          </div>
+                          <div class="col-8 text-end">
+                            <button type="submit" class="btn btn-sm btn-primary-soft  mb-0">Remettre à zéro</button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      
+                   </form>
+                </div>
+                
+            </div>
+        </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

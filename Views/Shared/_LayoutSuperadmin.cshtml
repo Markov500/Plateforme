@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html lang="fr-fr">
+@{
+    Membre m = ViewBag.membre;
+}
+<!-- Mirrored from social.webestica.com/blog.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Jun 2022 11:39:06 GMT -->
+<head>
+	
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Bootstrap 5 based Social Media Network and Community Theme">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="~/images/parametre/logo.png">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap">
+
+	<!-- Plugins CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="~/assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css">
+
+  <!-- Theme CSS -->
+    <link id="style-switch" rel="stylesheet" type="text/css" runAt="server" href="~/assets/css/style.css" >
+    <link rel="stylesheet" type="text/css" href="~/assets/css/perso.css">
+    
+    
+    
+	 
+</head>
+
+<body>
+<!-- *************************************** MAIN CONTENT START ****************************************** -->
+<main>
+    <div class="container-fluid row">
+        
+
+        <div class="col-lg-12 mt-4">
+              <!--=========================Breadcrumb START =================================-->
+
+              <breadcrumb style="--bs-breadcrumb-divider: '►';" ></breadcrumb>
+              @*@if(ViewBag.membre.Profil == "superadmin"){
+              <nav style="--bs-breadcrumb-divider: '►';" aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item">
+                          <a  asp-action="Index" asp-controller="Admins">Espace superadministrateur</a>
+                        </li>
+                    <li class="breadcrumb-item dropdown">
+                      <a  asp-action="Index" asp-controller="Admins">Utilisateur</a>
+                    </li>
+                    <li class="breadcrumb-item active">Liste des utilisateurs</li>
+                  </ol>
+              </nav>
+              }
+
+              @if(ViewBag.membre.Profil == "admin"){
+              <nav style="--bs-breadcrumb-divider: '►';" aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item dropdown">
+                          <a asp-action="Index" asp-controller="Admins">Espace administrateur</a>
+                       </li>
+                    <li class="breadcrumb-item active">Liste des utilisateurs</li>
+                  </ol>
+              </nav>
+              }*@
+              <!--=========================Breadcrumb END =================================-->
+        </div>
+
+
+        <!-- Sidenav START -->
+      <div class="col-lg-3">
+
+        <!-- Advanced filter responsive toggler START -->
+        <div class="d-flex align-items-center d-lg-none">
+          <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSideNavbar" aria-controls="offcanvasSideNavbar">
+            <i class="btn btn-primary fw-bold fa-solid fa-sliders-h bi bi-person"></i>
+            <span class="h6 mb-0 fw-bold d-lg-none ms-2">Menu</span>
+          </button>
+        </div>
+        <!-- Advanced filter responsive toggler END -->
+        
+        <!-- Navbar START-->
+        <nav class="navbar navbar-expand-lg mx-0"> 
+          <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSideNavbar">
+            <!-- Offcanvas header -->
+            <div class="offcanvas-header">
+              <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <!-- Offcanvas body -->
+            <div class="offcanvas-body d-block px-2 px-lg-0">
+              <!-- Card START -->
+              <div class="card overflow-hidden">
+                  <div class="align-items-center mt-2">
+                        <!-- Item Notification START -->
+                       <div class="nav flex-nowrap align-items-center ">
+                           <div class="nav-item dropdown ms-2">
+			                   <a class="nav-link icon-md btn btn-primary-soft p-0" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+			                       <i class="bi bi-bell-fill fs-6"></i> <span class="badge-notif"></span>
+                 
+			                   </a>
+
+                             <div class="dropdown-menu" data-bs-popper="none">
+                                <!-- Notification element start-->
+                                <div class="card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="m-0">Notifications <span class="badge bg-danger bg-opacity-10 text-danger ms-2">@m.Notifications.Where(n => n.Lu == false).Count() non lus</span></h6>
+              </div>
+              <div class="card-body p-0">
+                <ul class="list-group list-group-flush list-unstyled p-1">
+                  <!-- Notif item -->
+                  @if(ViewBag.membre.Notifications != null)
+                  @foreach(var n in m.Notifications.Where(n => n.Lu == false).OrderByDescending(n => n.DateEnvoi).Take(4))
+                {
+                    <li>
+                        <div class="list-group-item list-group-item-action row g-1 rounded d-flex border-0 p-1 mb-1">
+                          <div class="ms-sm-3 d-flex col-9">
+                             @if (n.Notification.Description.Length > 71)
+                                {
+                                    <p>
+                                        <a class="text-body" asp-action="Notifications" asp-controller="Notifications" style="font-size: 12px" >
+                                            @n.Notification.Description.Substring(0,70)...<span class="text-primary">Voir plus</span>
+                                        </a>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p>
+                                        <a class="text-body" title="consulter" asp-action="Notifications" asp-controller="Notifications" style="font-size: 12px">
+                                            @n.Notification.Description
+                                        </a>
+                                    </p>
+                                }
+                            <p class=" me-1  col-2  text-nowrap" style="font-size: 12px">
+                                @n.AffichageDate()
+                            </p>
+                          </div>
+                        </div>
+                    </li>
+                }
+                  
+                </ul>
+              </div>
+              <div class="card-footer text-center">
+                <a asp-action="Notifications" asp-controller="Notifications" class="btn btn-sm btn-primary-soft">Voir toutes les notifications</a>
+              </div>
+            </div>
+                                
+                                <!-- Notification element end-->
+                             </div>
+		                   </div>
+                       </div>
+                      <!-- Item Notification END -->   
+                  </div>
+                <!-- Cover image -->
+                <div class="h-50px" ></div>
+                  <!-- Card body START -->
+                  <div class="card-body pt-0">
+                      
+                      
+                  <div class="text-center">
+                    <!-- Avatar -->
+                    @*<img src="@ViewBag.membre.PhotoProfil" alt="" width="40" height="40" class="rounded-circle me-2">
+                                            @ViewBag.membre.Nom   @ViewBag.membre.Prenom*@
+                    <div class="avatar avatar-lg mt-n5 mb-3">
+                      <img class="avatar-img rounded border border-white border-3" src="@ViewBag.membre.PhotoProfil" alt="@ViewBag.membre.Username">
+                    </div>
+                    <!-- Info -->
+                    <h5 class="mb-0"> @ViewBag.membre.Nom   @ViewBag.membre.Prenom </h5>
+                    <small> @ViewBag.membre.Poste </small>
+                    <p class="mt-3">@Html.Raw(ViewBag.membre.Bio)</p>
+                  </div>
+
+                  <!-- Divider -->
+                  <hr>
+
+                  <!-- Side Nav START -->
+                  <ul class="nav nav-link-secondary flex-column fw-bold gap-2">
+                    @if(ViewBag.membre.Profil == "superadmin"){
+                    <!-- Parametre item -->
+                    <li class="nav-item">
+                      <a class="nav-link" asp-action="Index" asp-controller="Parametres"><i class="bi bi-tools fs-5"></i>   Paramétrage</a>
+                    </li>
+
+                    <!-- Departement item -->
+                    <li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="homeMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-house fs-5"></i>   Départements</a>
+						<ul class="dropdown-menu" aria-labelledby="homeMenu">
+							<li> <a class="dropdown-item"  asp-action="Index" asp-controller="Departements">Les départements</a></li>
+							<li> <a class="dropdown-item" asp-action="Create" asp-controller="Departements" class="dropdown-item">Ajout de département</a></li>
+						</ul>
+					</li>
+                    }
+                    @if(ViewBag.membre.Profil == "superadmin" || ViewBag.membre.Profil == "admin"){
+                    <!-- Compte item -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="homeMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-person fs-5"></i>   Utilisateurs</a>
+						<ul class="dropdown-menu" aria-labelledby="homeMenu">
+							<li> <a class="dropdown-item"  asp-action="Index" asp-controller="Admins">Les comptes utilisateurs</a></li>
+							<li> <a class="dropdown-item" asp-action="Create" asp-controller="Admins" class="dropdown-item">Ajout de compte</a></li>
+						</ul>
+					</li>
+                    }
+                    @if(ViewBag.membre.Profil == "superadmin" || ViewBag.membre.Profil == "moderateur"){
+                     <!-- Espace modérateur item -->
+                    <li class="nav-item">
+                      <a class="nav-link" asp-action="Index" asp-controller="Moderateurs"><i class="bi bi-tools fs-5"></i>   Contrôle des contenus</a>
+                    </li>
+                    }
+                    
+
+                    <!-- Aller item -->
+                    <li class="nav-item">
+                      <a class="nav-link" asp-action="Index" asp-controller="Publications"><i class="bi bi-arrow-right-circle fs-5"></i>   Aller à la plateforme</a>
+                    </li>
+
+                    <!-- Deconnexion item -->
+                    <li class="nav-item">
+                      <a class="nav-link" asp-controller="Membres" asp-action="Login"><i class="bi bi-power fs-5"></i>   Déconnexion</a>
+                    </li>
+
+                  </ul>
+                  <!-- Side Nav END -->
+                </div>
+                <!-- Card body END -->
+                <div class="modeswitch-wrap mb-4" id="darkModeSwitch">
+                    <div class="modeswitch-item">
+                      <div class="modeswitch-icon"></div>
+                    </div>
+                    <span>Mode sombre</span>
+                  </div>
+                
+                </div>
+              
+            </div>
+          </div>
+          
+        </nav>
+        <!-- Navbar END-->
+      </div>
+      <!-- Sidenav END -->
+
+      
+
+       
+         
+          <!-- Navbar END-->
+   
+        <!-- Sidenav END -->
+       <div class="col-lg-9 ">
+            @RenderBody()
+      </div>
+    </div>
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+
+<!-- =======================
+JS libraries, plugins and custom scripts -->
+
+<!-- Bootstrap JS -->
+<script src="~/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Template Functions -->
+<script src="~/assets/js/functions.js"></script>
+</body>
+
+<!-- Mirrored from social.webestica.com/blog.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Jun 2022 11:39:07 GMT -->
+</html>
+@await RenderSectionAsync("Scripts", required: false)

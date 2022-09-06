@@ -1,0 +1,130 @@
+﻿@model plateforme.Models.ViewModels.ContenuModifVM
+@{
+     ViewData["Title"] = Model.Titre;
+   string photo = ViewBag.photo;
+    Layout = "_LayoutMembre";
+}
+
+    <div class="row g-4">
+      <!-- Main content START -->
+      <div class="col-lg-8 mx-auto">
+        <div class="vstack gap-4">
+          <!-- Blog single START -->
+          <form class="card card-body row col-lg-12" asp-action="ModifierContenu" enctype="multipart/form-data">
+            
+            <!-- Card feed item START -->
+          <input asp-for="Id" type="hidden"/>
+            <div class="col-3">
+                <label class="form-label">TITRE<span class="text-danger">*</span></label>
+            </div>
+            <div class="col-8 mb-5">
+                <input asp-for="Titre" class="form-control" id="titre" placeholder="Donner un type à votre publication">
+                <span asp-validation-for="Titre" id="titreErreur" class="small text-danger"></span>
+            </div>
+
+
+            <!-- Description -->
+             <div class="col-11 mb-5">
+               <label class="form-label">AJOUTER UNE DESCRIPTION<span class="text-danger">*</span></label>
+              <textarea asp-for="Description" class="form-control" id="champs" rows="3" autoresize></textarea>
+               <span asp-validation-for="Description" id="champErreur" class="small text-danger"></span>
+             </div>
+
+             <div class="col-">
+                 <label class="form-label"><i class="bi bi-link-45deg text-warning pe-2"></i>LIENS</label>
+             </div>
+             <div class="col-8 mb-5">
+                 <input asp-for="Lien" class="form-control" id="lien" placeholder="">
+                 <span asp-validation-for="Lien" class="small text-danger"></span>
+             </div>
+            <!-- Card header END -->
+              @*<div class="col-3">
+                 <label><i class="bi bi-image-fill text-success pe-2"></i>PHOTO/<i class="bi bi-camera-reels-fill text-info pe-2"></i>VIDEO/<i class="bi bi-file-earmark-pdf-fill text-danger pe-2"></i>PDF</label>
+             </div>
+             <div class="col-8 mb-5">
+                 <input asp-for="Fichier" id="fichier" onchange="previewImage()" class="form-control">
+                 <span asp-validation-for="Fichier" class="small text-danger"></span>
+             </div>*@
+                
+             <div class="col-lg-8 mx-auto">
+                 <img src="@Model.LienFichier" class="card-img" id="preview" style="height: 30vh; width: 30vh;" alt="Impossible de privusialiser ce fichier"> 
+             </div>
+            
+            <!-- Card body START -->
+            <div class="card-body">
+              <!-- Info -->
+              
+              @if(Model.DateDeb != null)
+              {
+                  <div class="row g-5">
+                      <div class="col-6">Début: <input asp-for="DateDeb"/></div>
+                      <div class="col-6">Fin: <input asp-for="DateFin"/></div>
+                  </div>
+              }
+              
+              <!-- Feed react START -->
+               <div class="row g-4 mb-4">
+        
+                   <div class="col-lg-3">
+                                <label>Visibilité<span class="text-danger">*</span></label>
+                            </div>
+                   <div class="col-lg-8 row mt-4">
+
+                                    <div class="col-lg-6">
+                                        @if(Model.visiblite == "1" )
+                                        {
+                                            <input class="form-check-input"  type="radio" name="visiblite" id="" value="1" checked> <span>Toute l'entreprise</span> 
+                                        
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input"  type="radio" name="visiblite" id="" value="1"> <span>Toute l'entreprise</span> 
+                                        }
+                                  
+                                    </div>
+                            
+                                    <div class="col-lg-6">
+                                        @if(Model.visiblite == "2" )
+                                        {
+                                            <input class="form-check-input"  type="radio" name="visiblite" id="" value="2" checked> <span>@ViewBag.membre.Departement.NomDept</span> 
+                                        
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input"  type="radio" name="visiblite" id="" value="2">  <span>@ViewBag.membre.Departement.NomDept</span> 
+                                        }
+                                   
+                                    </div>
+                                <div class="col-lg-12 text-center">
+                                    <span asp-validation-for="visiblite" id="visibliteErreur" class="small text-danger"></span>
+                                </div> 
+                              </div>
+                 </div>
+               <div class="row">
+                 
+                 <div class="col-12 text-end">
+                   <input class="btn btn-success-soft" type="submit" value="Modifier" />
+                 </div>
+               </div>
+              <!-- Feed react END -->
+            </div>
+            <!-- Card body END -->
+      
+          
+          </form>
+         
+        </div>
+      </div>
+      <!-- Main content END -->
+    </div> <!-- Row END -->
+    <!-- Main return START -->
+    <div class="d-none d-lg-block">
+      <!-- Button -->
+      <a class="icon-md btn btn-primary position-fixed end-0 bottom-0 me-5 mb-5" asp-route-id="@ViewBag.membre.Id" asp-action="MesContennus" asp-controller="Membres" >
+        <i class="bi bi-arrow-left fs-3 "></i>
+      </a>
+    </div>
+    <!-- Main return END -->
+@section Scripts{
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

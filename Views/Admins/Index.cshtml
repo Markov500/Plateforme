@@ -1,0 +1,150 @@
+﻿@model IEnumerable<plateforme.Models.Membre>
+
+@{
+    ViewData["Title"] = "Liste des membres";
+    Layout = "_LayoutSuperadmin";
+    int duree = Convert.ToInt32(ViewBag.max);
+
+}
+
+@if(Model.Count() > 0)
+{
+
+   <div class="card bg-transparent border-0"> 
+       <div class="col-lg-12">
+           <div class="bg-mode p-4">
+                <h1 class="h4 mb-4">Les utilisateurs <span class="badge bg-success bg-opacity-10 text-success mb-2 fw-bold" style="font-size : 13px"> @Model.Count()</span></h1>
+                  <!-- Blog item START -->
+              <div style="height: 70vh; overflow: scroll;">
+                  <hr class="my-4">
+                  @foreach (var item in Model) {
+                      <!-- admin item START -->
+                     <div class="card bg-transparent border-0">
+                  
+                        <div class="row g-0">
+                      
+                          <div class="col-lg-2 text-center">
+                            <!-- Blog image -->
+                              <img width="100" height="100" class="rounded-circle me-2" src="@item.PhotoProfil" alt="">
+                          </div>
+                          <div class="col-lg-4 col-sm-12">
+                            <!-- Blog caption -->
+                            <h5>@Html.DisplayFor(modelItem => item.Nom) @Html.DisplayFor(modelItem => item.Prenom)
+                            @if(item.LastLogin is DateTime)
+                            {
+                                var i = (DateTime)item.LastLogin;
+                                if(DateTime.Now.Year == i.Year && DateTime.Now.Month - i.Month == duree){
+                                <span class="badge bg-warning bg-opacity-10 text-warning mb-2 fw-bold" style="font-size : 11px">Inactif</span>
+                                }
+                                else if(DateTime.Now.Year > i.Year )
+                                {
+                                    if(DateTime.Now.Month + 12 - i.Month > duree)
+                                    {
+                                        <span class="badge bg-warning bg-opacity-10 text-warning mb-2 fw-bold" style="font-size : 11px">Inactif</span>
+                                    }
+                                    
+                                }
+                                
+                                
+                                else if(item.Etat == "actif")
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success mb-2 fw-bold" style="font-size : 11px">Actif</span>
+                                }
+                                else if(item.Etat == "inactif")
+                                {
+                                     <span class="badge bg-primary bg-opacity-10 text-primary mb-2 fw-bold" style="font-size : 11px">Remis à zéro</span>
+                                }
+                                else if(item.Etat == "desactive")
+                                {
+                                    <span class="badge bg-light bg-opacity-80 text-body mb-2 fw-bold" style="font-size : 11px">Désactivé</span>
+                                }
+                            
+                            }
+                            else if(item.Etat == "inactif")
+                            {
+                                <span class="badge bg-danger bg-opacity-10 text-danger mb-2 fw-bold" style="font-size : 11px">Non confirmé</span>
+                            }
+                            else if(item.Etat == "desactive")
+                            {
+                                <span class="badge bg-light bg-opacity-80 text-body mb-2 fw-bold" style="font-size : 11px">Désactivé</span>
+                            }
+                            
+                            </h5>
+                            <div class="d-none d-sm-inline-block">
+                              <p class="mb-2">
+                                <i class="bi bi-house-door-fill"></i>@Html.DisplayFor(modelItem => item.Departement.NomDept)<br/>
+                                <i class="bi bi-person-fill"></i>@Html.DisplayFor(modelItem => item.Poste)
+                              </p>
+                              <!-- BLog date -->
+                           
+                              <a class="small text-secondary" href="#!"> <i class="bi bi-exclamation-triangle-fill text-danger"></i>@item.Avertissements.Count() avertissements</a>
+                            </div>
+                          </div>
+      
+                          <div class="col-lg-6 col-md-12 row g-1">
+                              <div class="col-lg-3 cl">
+                              @if(ViewBag.membre.Profil == "superadmin" && item.Etat != "desactive"){
+                              <a asp-action="Privilege" asp-route-id="@item.Id" class="btn btn-primary-soft" style="font-size: 12px">Modifier le privilège</a>
+                              }
+                          </div>
+
+                                @if (item.LastLogin is DateTime)
+                                {
+                                    var i = (DateTime)item.LastLogin;
+                                    if (DateTime.Now.Year == i.Year && DateTime.Now.Month - i.Month == duree)
+                                    {
+                                        <span class="badge bg-warning bg-opacity-10 text-warning mb-2 fw-bold" style="font-size : 11px">Inactif</span>
+                                    }
+                                    else if (DateTime.Now.Year > i.Year)
+                                    {
+                                        if (DateTime.Now.Month + 12 - i.Month > duree)
+                                        {
+                                            <div class="col-lg-3">
+                                                  <a asp-action="Supprime" asp-route-id="@item.Id" class="btn btn-primary-soft" style="font-size: 12px">Supprimer le compte</a>
+                                              </div>
+                                        }
+
+                                    }
+                                }
+
+                          
+                               
+                          @if( item.Etat != "desactive" && item.LastLogin is DateTime){
+                          <div class="col-lg-3">
+                              <a asp-action="Desactive" asp-route-id="@item.Id" class="btn btn-primary-soft" style="font-size: 12px">Désactiver le compte</a>
+                          </div>
+                          }
+                          else if (item.Etat == "desactive")
+                          {
+                              <div class="col-lg-3">
+                                  <a asp-action="Desactive" asp-route-id="@item.Id" class="btn btn-primary-soft" style="font-size: 12px">Activer le compte</a>
+                              </div>
+                          }
+                          @if(item.Etat != "inactif")
+                          {
+                              <div class="col-lg-3">
+                                  <a asp-action="Zero" asp-controller="Admins" asp-route-id="@item.Id" class="btn btn-primary-soft"style="font-size: 12px">Remettre à zéro</a>
+                              </div>
+                          }
+                          
+                          
+                          </div>
+                        </div>
+                     </div>
+                      <!-- admin item END -->
+                      <hr class="my-4">
+                  }
+              </div>
+           </div>
+       </div>
+   </div>
+}
+else
+{
+   <div class="text-center">
+     <div class="my-sm-2 py-sm-2">
+       <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+       <h5 class="mt-2 mb-3 text-body">Aucun utilisateur disponible</h5>
+     </div>
+   </div>
+}

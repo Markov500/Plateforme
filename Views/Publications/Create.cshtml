@@ -1,0 +1,295 @@
+﻿@model plateforme.Models.ViewModels.PublicationVM
+@{
+    ViewData["Title"] = "Faire une publication";
+    Layout = "_LayoutMembre";
+}
+
+<div class="card bg-transparent border-0">
+            
+            <div class="col-lg-12">
+                <div class="bg-mode p-4">
+                  <div class="col-lg-12 ">
+                    <div class="row g-4">
+    
+                        <!-- Card body START -->
+                        <div class="card-body">
+                          <!-- Form settings START -->
+                          <form class="row g-3" name="form" asp-action="Create" enctype="multipart/form-data">
+                            <p class="text-body">
+                                <marquee> NB : Les champs marqués du signe <span class="text-danger">*</span> sont obligatoires</marquee><br />
+                                
+                            </p>
+                            <div class="row g-3 card-body" id="corps">
+                                 <!-- Titre -->
+                                 <div class="row mb-4">
+                                    <div class="col-3">
+                                        <label class="form-label">TITRE<span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input asp-for="Titre" class="form-control" id="titre" placeholder="Donner un type à votre publication">
+                                        <span asp-validation-for="Titre" id="titreErreur" class="small text-danger"></span>
+                                    </div>
+                                 </div>
+                      
+                      
+                              <!-- Description -->
+                              <div class="col-11 mb-5">
+                                <label class="form-label">AJOUTER UNE DESCRIPTION<span class="text-danger">*</span></label>
+                               <textarea asp-for="Description" class="form-control" id="champs" autoresize></textarea>
+                                <span asp-validation-for="Description" id="champErreur" class="small text-danger"></span>
+                              </div>
+        
+                              <!-- Lien -->
+                              <div class="row mb-4">
+                                <div class="col-3">
+                                    <label class="form-label"><i class="bi bi-link-45deg text-warning pe-2"></i>LIENS</label>
+                                </div>
+                                <div class="col-8">
+                                    <input asp-for="Lien" class="form-control" id="lien" placeholder="">
+                                    <span asp-validation-for="Lien" class="small text-danger"></span>
+                                </div>
+                             </div>
+                      
+                              <!-- Fichier -->
+                              <div class="row mb-4">
+                                <div class="col-3">
+                                    <label class="form-label"><i class="bi bi-image-fill text-success pe-2"></i>PHOTO/<i class="bi bi-camera-reels-fill text-info pe-2"></i>VIDEO/<i class="bi bi-file-earmark-pdf-fill text-danger pe-2"></i>PDF</label>
+                                </div>
+                                <div class="col-8">
+                                    <input asp-for="Fichier" class="form-control" id="fichier" onchange="previewImage()" accept="image/*,video/*,.pdf"/>
+                                    <span asp-validation-for="Fichier" class="small text-danger"></span>
+                                </div>
+                             </div>
+        
+                              <!-- Tag -->
+                              <div class="row mb-5">
+                                <div class="col-3">
+                                    <label class="form-label">TAGS</label>
+                                </div>
+                                <div class="col-8">
+                                    <input asp-for="Tags"class="form-control" placeholder="#Tag1#Tag2#Tag3" id="tag">
+                                    <span asp-validation-for="Tags" class="small text-danger"></span>
+                                </div>
+                             </div>
+                    
+      
+                              <!-- Visibilité -->
+                              <div class="row mb-4">
+                                <div class="col-3">
+                                    <label class="form-label">VISIBILITE<span class="text-danger">*</span></label>
+                                </div>
+                                <div class="row col-9">
+                                    <div class="col-4">
+                                        <input class="form-check-input"   type="radio" name="visiblite" value="1"> Toute l'entreprise 
+                                    </div>
+                                    <div class="col-4">
+                                        <input class="form-check-input"  type="radio" name="visiblite" value="2" > @ViewBag.membre.Departement.NomDept
+                                    </div>
+                                    <div class="col-12">
+                                        <span asp-validation-for="visiblite"  id="visibliteErreur"  class="small text-danger"></span>
+                                    </div>
+                                </div>
+                             </div>
+      
+                              <!-- Type de publication -->
+                              <div class="row mb-4">
+                                <div class="col-3">
+                                    <label class="form-label">TYPE<span class="text-danger">*</span></label>
+                                </div>
+                                <div class="row col-9">
+                                    <div class="col-3">
+                                        <input class="form-check-input"  type="radio" name="type" value="note" onclick="date()"> Note de service 
+                                    </div>
+                                    <div class="col-3">
+                                        <input class="form-check-input"  type="radio" name="type" value="pub" onclick="date()"> Publication 
+                                    </div>
+                                    <div class="col-3">
+                                        <input class="form-check-input"  type="radio" name="type" value="annonce" onclick="date()"> Annonce
+                                    </div>
+                                    <div class="col-3">
+                                        <input class="form-check-input"  type="radio" name="type" value="event" onclick="date()"> Evènement
+                                    </div>
+                                    <div class="col-12">
+                                        <span asp-validation-for="type" id="typeErreur" class="small text-danger"></span>
+                                    </div>
+                                </div>
+                             </div>
+
+                      
+                              <div id="date" class="mb-4" style="visibility: hidden;">
+                                  <!-- Date de début -->
+                                  <div class="row mb-4">
+                                    <div class="col-3">
+                                        <label class="form-label">DATE DE DEBUT<span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input asp-for="DateDeb" class="form-control" id="debut">
+                                        <span asp-validation-for="DateDeb" id="debutErreur" class="small text-danger"></span>
+                                    </div>
+                                 </div>
+      
+                                <!-- Date de début -->
+                                  <div class="row mb-4">
+                                    <div class="col-3">
+                                        <label class="form-label">DATE DE FIN</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input asp-for="DateFin" class="form-control" id="">
+                                        <span asp-validation-for="DateFin" class="small text-danger"></span>
+                                    </div>
+                                 </div>
+                              </div>    
+                  
+                               <!-- Bouton Annuler -->
+                              <div class="col-sm-6 col-lg-6" >
+                                <input  class="btn btn-sm btn-danger-soft mb-0" type="reset" value="Annuler">
+                              </div>
+                      
+                              <!-- Bouton suivant -->
+                              <div class="col-sm-6 col-lg-6 text-end">
+                                <a class="btn btn-sm btn-primary-soft mb-0" onclick="Valider()">Valider</a> 
+                              </div>
+      
+                            </div>
+                    
+      
+                            <div class="col-lg-12 bg-light w-50 popup" id="pop">
+                               <div class="row g-4">
+                                 <div class="col-sm-6 col-lg-12 p-3 w-75 mx-auto">
+                                   @*==============================Preview START===========================*@
+                                   
+                                    <div class="card-body mx-auto">
+                                       <h3 class="text-body" id="titrePrev"></h3>
+                                       <p id="champPrev"></p>
+                                       <!-- Card header END -->
+                                   
+                                         <img class="card-img" id="preview" style="height: 30vh; width: 30vh; visibility: hidden;" alt="Impossible de privusialiser ce fichier"> 
+                                         <div id="lienPrev" class="text-primary"></div>
+                                       <p id="tagPrev" class="mt-2"></p>
+                                    </div>
+                                     
+                                   @*===========================Preview END======================================*@
+                                   <p>Veuillez confirmer la réalisation de cette publication</p>
+                                     <div class="col-lg-12 row">
+                                            <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('pop')">Retour</a> </div>
+                                       <div class="col-6 text-end"><button class="btn btn-sm btn-success-soft mb-0">Confirmer</button></div>
+                                     </div>
+                    
+                                 </div>
+                                  <!-- Card News END -->
+                               </div>
+                            </div>
+                           
+                                      
+                          </form>
+                          <!-- Settings END -->
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+         // ckeditor 5 initialization
+            ClassicEditor
+                .create(document.getElementById('champ'))
+                .then(editor => {
+                    console.log(editor);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+
+@section Scripts{
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  <script>
+    //CKEDITOR.replace('editor');
+    function date()
+    {
+        const dateEvent = document.getElementById('date');
+       
+        
+       
+      if(document.form.type.value=="event")
+      {
+        dateEvent.style="visibility: visible;";
+
+      }
+      else
+      {
+          
+        dateEvent.style="visibility: hidden;";
+
+      }
+    }
+
+    function Valider() {
+        let check = 0;
+        document.getElementById('titreErreur').innerHTML = "";
+        document.getElementById('champErreur').innerHTML = "";
+        document.getElementById('visibliteErreur').innerHTML = "";
+        document.getElementById('typeErreur').innerHTML = "";
+        document.getElementById('debutErreur').innerHTML = "";
+
+        if (document.getElementById('titre').value == "") {
+            document.getElementById('titreErreur').innerHTML = "Donnez un titre à votre publication";
+            check = 1;
+
+        }
+
+        if (document.getElementById('champs').value == "") {
+            document.getElementById('champErreur').innerHTML = "Faites une brève description de votre publication";
+
+            check = 1;
+        }
+        if (!document.getElementsByName('visiblite')[0].checked && !document.getElementsByName('visiblite')[1].checked) {
+            document.getElementById('visibliteErreur').innerHTML = "Choisissez à quel échelle la publication peut être consultée";
+
+            check = 1;
+        }
+        if (!document.getElementsByName('type')[0].checked && !document.getElementsByName('type')[1].checked &&
+            !document.getElementsByName('type')[2].checked && !document.getElementsByName('type')[3].checked) {
+            document.getElementById('typeErreur').innerHTML = "Choisissez le type de votre publication";
+
+            check = 1;
+        }
+        if (document.getElementsByName('type')[3].checked) {
+            if (document.getElementById('debut').value == "") {
+                document.getElementById('debutErreur').innerHTML = "Un évènement doit toujours avoir une date de début";
+                check = 1;
+            }
+
+
+        }
+
+        if (check == 0) {
+            document.getElementById('titrePrev').innerHTML = document.getElementById('titre').value;
+            document.getElementById('champPrev').innerHTML = document.getElementById('champs').value;
+            if (document.getElementById('lien').value != "") {
+                document.getElementById('lienPrev').innerHTML = document.getElementById('lien').value;
+            }
+            if (document.getElementById('tag').value != "") {
+                document.getElementById('tagPrev').innerHTML = document.getElementById('tag').value;
+            }
+            if (document.getElementById("fichier").files.length > 0) {
+
+                document.getElementById('preview').style = "visibility: visible;height: 30vh; width: 30vh;";
+
+
+            }
+
+            toggle("pop");
+        }
+    }
+
+  </script>
+
+}
+ 

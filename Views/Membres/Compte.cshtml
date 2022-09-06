@@ -1,0 +1,238 @@
+﻿@model plateforme.Models.ViewModels.membreModifVM
+
+@{
+     ViewData["Title"] = "Modifier mes informations";
+    Layout = "_LayoutMembre";
+     string photo = ViewBag.photo;
+}
+
+    <div class="row">
+  
+        <!-- Sidenav START -->
+        <div class="col-lg-3">
+
+            <!-- Advanced filter responsive toggler START -->
+            <div class="d-flex align-items-center d-lg-none">
+                <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSideNavbar" aria-controls="offcanvasSideNavbar">
+                    <i class="btn btn-primary fw-bold fa-solid fa-sliders-h"></i>
+                    <span class="h6 mb-0 fw-bold d-lg-none ms-2">Mon Profil</span>
+                </button>
+            </div>
+            <!-- Advanced filter responsive toggler END -->
+
+            <!-- Navbar START-->
+            <nav class="navbar navbar-expand-lg mx-0"> 
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSideNavbar">
+                    <!-- Offcanvas header -->
+                    <div class="offcanvas-header">
+                        <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Offcanvas body -->
+                    <div class="offcanvas-body d-block px-2 px-lg-0 ">
+                        <!-- Card START -->
+                        <div class="card overflow-hidden">
+                            <!-- Cover image -->
+                            <div class="h-30px" ></div>
+                            <!-- Card body START -->
+                            <div class="card-body pt-0">
+                                <div class="text-center">
+
+                                    <!-- Avatar -->
+                                    <div class="avatar avatar-lg mt-n5 mb-3">
+                                        <a href="#!"><img class="avatar-img rounded border border-white " src="@ViewBag.membre.PhotoProfil" id="preview" alt=""></a>
+                                        <span asp-validation-for="Photoprofil"></span>
+                                    </div>
+                                    <!-- Info -->
+                                    <h5 class="mb-0">@ViewBag.membre.Nom @ViewBag.membre.Prenom</h5>
+                                    <small>@ViewBag.membre.Poste</small>
+                                    <p class="mt-1">@Html.Raw(ViewBag.membre.Bio)</p>
+                                    <form class="row mb-3" asp-action="Compte" enctype="multipart/form-data">
+                                        <div class="mb-2 col-6"  onclick="document.getElementById('fichier').click();">
+                                            <i class=" btn btn-primary-soft bi bi-pencil  "></i> 
+                                        </div>
+
+                                        <input asp-for="Nom" class="form-control" value="@ViewBag.membre.Nom" type="hidden">
+                                        <input asp-for="Prenom" class="form-control"  value="@ViewBag.membre.Prenom" type="hidden">
+                                        <input asp-for="Mail" class="form-control" value="@ViewBag.membre.Mail" type="hidden">
+                                        <input asp-for="Username" class="form-control" value="@ViewBag.membre.Username"  type="hidden">
+                                        <input asp-for="Poste" class="form-control" value="@ViewBag.membre.Poste" type="hidden">
+                                        <input class="form-control" placeholder="" value="@ViewBag.membre.Departement.NomDept"  type="hidden">
+                                        <input asp-for="bio" class="form-control" value="@ViewBag.membre.Bio" type="hidden">
+                                        <input asp-for="Photoprofil" style="display: none;" type="image" id="fichier" class="form-control" onchange="previewImage()"/> 
+                                        <div class="col-6 mb-2">
+                                        <input type="checkbox" class="check-input" id="sup" value="oui" name="sup" onchange="retirer()" style="display: none;"/><label for="sup" ><i class="bi bi-trash fs-5 btn btn-danger-soft"></i></label>  
+                                        </div>
+                                        <div class="col-8 mx-auto">
+                                        <input class="btn btn-success-soft" type="submit" value="Appliquer"/>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- Card body END -->
+                                <!-- Card footer -->
+                                <div class="card-footer text-center py-2">
+                                    <a class="dropdown-item" asp-action="ChangePassword" >
+                                        <i class="fa-fw bi bi-key-fill fs-3 me-2"></i>Changer mon mot de passe
+                                    </a> 
+                                </div>
+                            </div>
+                            <!-- Card END -->
+
+
+                            <!-- Copyright -->
+                            <p class="small text-center mt-1">©2020 <a class="text-body" target="_blank" href="https://www.cagecfi.com/"> CAGECFI </a></p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Navbar END-->
+        </div>
+        <!-- Sidenav END -->
+    
+        <!-- Main content START -->
+      
+        <div class="col-lg-6 vstack gap-4">
+          <!-- Setting Tab content START -->
+          <div class="tab-content py-0 mb-0">
+
+            <!-- Account setting tab START -->
+            <div class="tab-pane show active fade" id="nav-setting-tab-1">
+               
+                    <!-- Account settings START -->
+                    <div class="card mb-4">
+
+                        <!-- Title START -->
+                        <div class="card-header border-0 pb-0">
+                            <h1 class="card-title mt-3 mb-4 p-2">Gérer mon compte</h1>
+                            <p class="mb-0">Entrez les informations dans les champs que vous souhaitez modifier puis valider</p>
+                        </div>
+                        <!-- Card header START -->
+                        <!-- Card body START -->
+                        <div class="card-body">
+                            <!-- Form settings START -->
+                            <form class="row g-3" asp-action="Compte" enctype="multipart/form-data">
+                                <!-- First name -->
+                                <div class="col-sm-6 col-lg-6">
+                                    <label class="form-label">NOM</label>
+                                    <input asp-for="Nom" class="form-control" value="@ViewBag.membre.Nom">
+                                    <span asp-validation-for="Nom" class="small text-danger"></span>
+                                </div>
+                                <!-- Last name -->
+                                <div class="col-sm-6 col-lg-6">
+                                    <label class="form-label">PRENOM(S)</label>
+                                    <input asp-for="Prenom" class="form-control"  value="@ViewBag.membre.Prenom">
+                                    <span asp-validation-for="Prenom" class="small text-danger"></span>
+                                </div>
+
+
+                                <!--Adresse mail -->
+                                <div class="col-sm-6 col-lg-6">
+                                    <label class="form-label">ADRESSE MAIL</label>
+                                    <input asp-for="Mail" class="form-control" value="@ViewBag.membre.Mail">
+                                     <span asp-validation-for="Mail" class="small text-danger"></span>
+                                </div>
+
+                                 <!--Nom d'utilisateur -->
+                                <div class="col-sm-6 col-lg-6">
+                                    <label class="form-label">NOM D'UTILISATEUR</label>
+                                    <input asp-for="Username" class="form-control" value="@ViewBag.membre.Username" readonly>
+                                     <span asp-validation-for="Username" class="small text-danger"></span>
+                                </div>
+
+                                <!-- Poste  -->
+                                <div class="col-sm-6 col-lg-6">
+                                    <label class="form-label">POSTE</label>
+                                    <input asp-for="Poste" class="form-control" value="@ViewBag.membre.Poste" >
+                                     <span asp-validation-for="Poste" class="small text-danger"></span>
+                                </div>
+                                <!-- Département -->
+                                <div class="col-sm-6 col-lg-6">
+                                    <label class="form-label">DEPARTEMENT</label>
+                                    <input type="text" class="form-control" placeholder="" value="@ViewBag.membre.Departement.NomDept" disabled>
+                                </div>
+                                <!-- Page information -->
+                                <div class="col-12">
+                                    <label class="form-label">BIO</label>
+                                    <textarea asp-for="bio" class="form-control" id="champs" value="@ViewBag.membre.Bio" autoresize></textarea>
+                                     <span asp-validation-for="bio" class="small text-danger"></span>
+                                </div>
+                                @*<!-- Photo de profil  -->
+                              <div class="col-12 row mt-5">
+                                  <label class="form-label">Photo de profil</label>
+                                 <div class="col-sm-6 col-lg-6">
+                                    
+                                    <input asp-for="Photoprofil" id="Photoprofil" class="form-control" onchange="previewImage();"  style="display: none;"> <input type="checkbox" value="oui" name="sup"  style="display: none;"/> Supprimer la photo
+                                     <span asp-validation-for="Photoprofil" class="small text-danger"></span>
+                                 </div>
+                                <div class="col-sm-6 col-lg-6">
+                                    <div class="avatar avatar-lg">
+                                        <img class=" rounded" id="preview">
+                                    </div>
+                                </div>
+                               </div>*@
+                                
+                                <!-- Button  -->
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-sm btn-success-soft mb-0">Enregistrer les modifications</button>
+                                </div>
+                            </form>
+                            <!-- Settings END -->
+                        </div>
+                        <!-- Card body END -->
+                    </div>
+                    <!-- Account settings END -->
+                    @*<div class="card mb-4 text-center">
+                        <a asp-action="ChangePassword" class="btn btn-primary-soft fs-4 mx-2">Changer votre mot de passe</a>
+                    </div>*@
+               
+            </div>
+            <!-- Account setting tab END -->
+
+          </div>
+        </div>
+      
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+         // ckeditor 5 initialization
+            ClassicEditor
+                .create(document.getElementById('champ'))
+                .then(editor => {
+                    console.log(editor);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+
+    @section Scripts{
+         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        <script>
+
+           
+
+            function retirer() {
+                var btn = document.getElementById("sup");
+                
+            
+                if (btn.checked) 
+                {
+                    document.getElementById("preview").setAttribute("src", "@photo");
+                }
+                else 
+                {
+                
+                    document.getElementById("preview").setAttribute("src", "@ViewBag.membre.PhotoProfil");
+                }
+       
+             }
+
+ 
+        </script>
+    }
+   

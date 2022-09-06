@@ -1,0 +1,175 @@
+﻿@model plateforme.Models.ViewModels.LoginVM
+
+@{
+    ViewData["Title"] = "Connectez-vous";
+    Layout = null;
+    string login = ViewBag.login;
+}
+
+<!DOCTYPE html>
+<html lang="fr-fr">
+
+<!-- Mirrored from social.webestica.com/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Jun 2022 11:39:09 GMT -->
+<head>
+	
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- Favicon -->
+	<link rel="shortcut icon"  href="~/images/parametre/logo.png">
+
+
+	
+	<link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+
+	<!-- Theme CSS -->
+  <link id="style-switch" rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<link id="style-switch" rel="stylesheet" type="text/css" href="assets/css/myStyle.css">
+	 
+</head>
+
+<body class="font">
+
+<!-- **************** MAIN CONTENT START **************** -->
+<div>
+  <div >
+    <div class="form">
+      <h2>CONNECTEZ-VOUS</h2>
+        <form class="row g-3 container" asp-action="Login">
+          <!-- Email -->
+          <div class="col-10">
+            <input asp-for="Identifiant" class="form-control" placeholder="Email ou nom d'utilisateur"/>
+                <span asp-validation-for="Identifiant" class="text-danger"></span>
+          </div>
+          <!-- New password -->
+          
+            <!-- Password -->
+            <div class="col-10 ">
+              <input asp-for="mpass" class="form-control" placeholder="mot de passe"/>
+                <span asp-validation-for="mpass" class="text-danger"></span>
+                <p class="text-danger fs-6">@ViewBag.erreur</p>
+            </div>
+            @*<p class="text-end mt-0">
+              <a class="oublie" href="forgot-password.html">Mot de passe oublié</a>
+            </p>*@
+            <div class="col-12 mt-0" >
+              <button class="btn-primary-soft" type="submit">Se connecter</button>
+            </div>
+             
+          <!-- Button -->
+          
+          <!-- Copyright -->
+          
+        </form>
+  
+    </div>
+  
+  </div>
+</div>
+<style>
+
+body
+{
+    height: 100vh;
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right,rgb(87, 87, 230),rgb(134, 205, 233),rgb(170, 221, 241));
+   
+    /*background: linear-gradient(to right,rgb(87, 87, 230),rgb(134, 205, 233),rgb(170, 221, 241));*/
+    
+}
+.form
+{
+    width: 340px;
+    height:400px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 10px 32px rgba(31,38,135,.37);
+    border-radius: 30px;
+    border-left: 2px double rgba(255,255,255,0.3);
+    border-top: 2px double rgba(255,255,255,0.3);
+    
+}
+h2{
+  font-size:25px;
+  text-align: center;
+  color: rgb(0, 0, 0);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  opacity: .7;
+  padding: 5px;
+}
+
+input
+{
+  margin: 5% auto;
+  margin-left: 10px;
+
+}
+
+button
+{
+  width: 80%;
+  color: rgb(24, 23, 23);
+  font-size : 15px;
+  font-weight: bold;
+  opacity: .7;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  margin-left: 10px;
+
+}
+
+.oublie
+{
+  color: royalblue;
+  font-size: 10px;
+  border: none;
+  border-radius:  25px;
+  padding: 3px;
+  margin-right: 10px;
+  
+}
+
+.font{
+    position: relative;
+    margin: auto;
+}
+
+.font::after{
+    position: absolute;
+    content: "";
+    height: 350%;
+    width: 350%;
+    background-image: url("@login");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    opacity: 8%;
+    z-index: -100;
+}
+</style>          
+<!-- **************** MAIN CONTENT END **************** -->
+ 
+
+<!-- =======================
+JS libraries, plugins and custom scripts -->
+
+<!-- Bootstrap JS -->
+<script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  
+</body>
+
+<!-- Mirrored from social.webestica.com/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Jun 2022 11:39:09 GMT -->
+</html>
+ 

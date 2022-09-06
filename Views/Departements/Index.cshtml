@@ -1,0 +1,55 @@
+﻿@model IEnumerable<plateforme.Models.Departement>
+
+@{
+    ViewData["Title"] = "Liste des départements";
+    Layout="_LayoutSuperadmin";
+}
+
+
+        
+        <div class="card bg-transparent border-0">
+            <div class="col-lg-12">
+                <div class="bg-mode p-4">
+                  <h1 class="h4 mb-4">Les différents départements</h1>
+                  <!-- Blog item START -->
+                 <div style="height: 70vh; overflow: scroll;">
+                  <hr class="my-4">
+                  @foreach (var item in Model) {
+                  <!-- admin item START -->
+                  <div class="card bg-transparent border-0">
+                  
+                    <div class="row g-3 p-3">
+                      
+                      <div class="col-lg-2">
+                        <!-- Blog image -->
+                          <img class="avatar-img rounded-circle" src="@ViewBag.icone" alt="">
+                      </div>
+                      <div class="col-lg-8">
+                        <!-- Blog caption -->
+                        <h5>
+                            @Html.DisplayFor(modelItem => item.NomDept) 
+                            <span class="badge bg-success bg-opacity-10 text-success  fw-bold" style="font-size : 11px">@item.Membres.Where(p => p.Etat != "supprime").Count() employé(s)</span>
+                        </h5>
+                        <div class="d-none d-sm-inline-block">
+                          <p class="mb-2">
+                            <i class="bi bi-person-fill"></i>@item.Membres.Where(p => p.Profil == "membre" && p.Etat != "supprime").Count() membres simples<br>
+                            <i class="bi bi-person-fill text-warning"></i>@item.Membres.Where(p => p.Profil == "moderateur" && p.Etat != "supprime").Count() modérateurs <br>
+                            <i class="bi bi-person-fill text-primary"></i>@item.Membres.Where(p => p.Profil == "admin" && p.Etat != "supprime").Count() administrateurs <br>
+                          </p>
+                        </div>
+                      </div>
+      
+         
+                      <div class="col-lg-2 text-end">
+                          <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info-soft">Modifier</a>
+                      </div>
+         
+                    </div>
+                  </div>
+                  <!-- admin item END -->
+                  <hr class="my-4">
+                  }
+                </div>
+                </div>
+            </div>
+        </div>

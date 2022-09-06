@@ -1,0 +1,83 @@
+﻿@model plateforme.Models.Departement
+
+@{
+     ViewData["Title"] = "Ajouter un département";
+    
+    Layout="_LayoutSuperadmin";
+}
+
+
+        <div class="col-lg-12 ">
+            <div class="row g-4">
+              <div class="col-sm-6 col-lg-12">
+                <div class="card">
+                  <!-- Card header START -->
+                  <div class="card-header pb-0 border-0">
+                    <h5 class="card-title mb-0">Créer un département</h5>
+                  </div>
+                  <!-- Card header END -->
+                  <!-- Card body START -->
+                  <div class="card-body">
+                    <!-- Form settings START -->
+                    <form class="row g-3" asp-action="Create">
+                      <div class="row g-3 card-body" id="corps">
+                          <!-- Nom département -->
+                            <div class="row mb-4">
+                                  <div class="col-3">
+                                    <label asp-for="NomDept" class="control-label"></label>
+                                  </div>
+                                  <div class="col-8">
+                                    <input asp-for="NomDept" id="nom" class="form-control" placeholder="Entrez le nom du département à créer"/>
+                                    <span asp-validation-for="NomDept" class="small text-danger" id="nomErreur"></span>
+                                  </div>
+                                <!-- Button  -->
+                                <div class="col-6">
+                                  <input type="reset" class="btn btn-sm btn-danger-soft mb-0" value="Annuler">
+                                </div>
+                                <!-- Button  -->
+                                <div class="col-6 text-end">
+                                  <a onclick="Valider()" class="btn btn-sm btn-success-soft  mb-0">Valider</a> 
+                                </div>
+                            </div>
+                      </div>
+                      
+                      <div class="col-lg-12 bg-light w-50 p-4 mx-auto" id="popup" style="margin-left : 100px"> 
+                        <div class="row g-4">
+                           <div class="col-sm-6 col-lg-12">
+                              <p>
+                                  Veuillez confirmer l'ajout du département  <span class="fw-bold" id="nomPrev"></span>
+                              </p>
+                              
+                              <div class="col-lg-12 row">
+                                <div class="col-6"><p class="btn btn-sm btn-danger-soft mb-0" onclick="toggle()">Retour</p> </div>
+                                <div class="col-6 text-end"><button class="btn btn-sm btn-success-soft mb-0">Confirmer</button></div>
+                              </div>
+                    
+                           </div>
+                                  <!-- Card News END -->
+                        </div>
+                      </div>
+                    </form>
+                    <!-- Settings END -->
+                    
+                  </div>
+                  <!-- Card body END -->
+                </div>
+              </div>
+              <!-- Card News END -->
+            </div>
+        </div>
+        <script>
+            function Valider()
+            {
+                document.getElementById("nomErreur").innerHTML = "";
+                if (document.getElementById("nom").value == "") {
+                    document.getElementById("nomErreur").innerHTML = "Vous devez renseigner un nom pour le département";
+                }
+                else {
+                    document.getElementById("nomPrev").innerHTML = document.getElementById("nom").value;
+                    toggle();
+                }
+            }
+        </script>
+

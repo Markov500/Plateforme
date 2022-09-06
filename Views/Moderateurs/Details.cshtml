@@ -1,0 +1,194 @@
+﻿@model IEnumerable<plateforme.Models.Contenu>
+
+@{
+     ViewData["Title"] = "Contenus signalés";
+    Layout = "_LayoutSuperadmin";
+
+}
+
+
+
+        <div class="card bg-transparent border-0">
+            
+            <div class="col-lg-12">
+              <div class="bg-mode p-4">
+                  <!-- Blog item START -->
+                <div style="height: 70vh; overflow: scroll;">
+                 <div class="row g-4">
+                  <!-- Main content START -->
+                   @foreach(var item in Model)
+                   {
+
+                   
+                      <div class="col-sm-12 col-lg-6">
+                        <!-- Card feed item START -->
+                        <div class="card h-100  p-4 row">
+                             <div class="dropdown text-end">
+                                <a href="#" class="text-secondary btn btn-secondary-soft-hover py-1 px-2" id="cardFeedAction" data-bs-toggle="dropdown" aria-expanded="false">
+                                  <i class="bi bi-three-dots-vertical"></i>
+                                </a>
+                                <!-- Card signal action  -->
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cardFeedAction">
+                                    @if(item.Signals.Where(p => p.MembreId == ViewBag.membre.Id).Count() == 0)
+                                    {
+                                      <li> 
+                                         <a class="dropdown-item signal" asp-route-id="@item.Id" asp-action="Signaler" asp-controller="Membres">
+                                             <i class="bi bi-exclamation-triangle-fill signalIcon text-warning"></i> <span class="signalText">Signaler</span> 
+                                         </a>
+                                      </li>
+                                    }
+                          
+                                  <!-- Card retirer action -->
+                                  @if(ViewBag.membre.Profil == "moderateur" || ViewBag.membre.Profil == "superadmin")
+                                  {
+                                        <li> 
+                                            <a class="dropdown-item signal" onclick="confirmer(@item.Id,'@item.Titre')">
+                                              <i class="bi bi-trash-fill signalIcon text-danger"></i><span class="signalText">Retirer</span>
+                                            </a>
+                                            <script>
+                                                function confirmer(id,titre)
+                                                {
+                               
+                                                    if(confirm("Confirmer le retrait du contenu "+titre))
+                                                    {
+                                                        window.location.replace("/Moderateurs/Retirer?id="+id);
+                                                    }
+                                                }
+                                            </script>
+                                        </li> 
+                                
+                                        <!-- Card Avertir action -->
+                                          <li> 
+                                            <a class="dropdown-item signal" asp-route-id="@item.MembreId" target="_blank" asp-action="Avertir" asp-controller="Moderateurs">
+                                              <i class="bi bi-hand-thumbs-down-fill signalIcon text-primary"></i><span class="signalText">Avertir</span>
+                                            </a>
+                                          </li>
+                                  }
+            
+                                </ul>
+                      </div>
+                          <h3 class="text-body">@item.Titre</h3>
+                          
+                          <!-- Card header END -->
+                          
+                          <p class="text-body mb-2">
+                              @Html.Raw(item.Description)
+                          </p>
+                          @if(item.Ressources != null)
+                            @foreach(var res in item.Ressources)
+                            {
+                                if(res is Fichier)
+                                {
+                                        var i = (Fichier)res;
+                                        if(i.Type == "photo")
+                                        {
+                                            <img class="card-img mb-2" src="@i.Chemin" alt="Post" style="height : 50vh">
+                                        }
+                                        else if (i.Type == "video")
+                                        {
+                                            <div class="player-wrapper overflow-hidden mb-2">
+                                              <video class="player-html mb-2" controls crossorigin="anonymous">
+                                                <source src="@i.Chemin">
+                                              </video>
+                                            </div>
+                                        }
+                                        else if(i .Type == "pdf")
+                                        {
+                                            <a class="mb-2" href="@i.Chemin"><i class="bi bi-file fs-1"></i></a>
+                                        }
+                                
+                                
+                                        }
+                                        else
+                                        {
+                                            var i = (Lien)res;
+                                            <a href="@i.Url">@i.NomRes</a>    
+                                        }
+                            
+                                    }
+          
+                            <!-- Tags START -->
+                                    @if(item is Publication)
+                                    {
+                                        var i = (Publication)item;
+                                        if(i.Tags != null)
+                                        {
+                                             var listTag = i.Tags.Split("#").ToList();
+                                            <ul class="nav nav-stack py-3 small">
+                                               @foreach(var j in listTag)
+                                               {
+                                                   <li class="nav-item">
+                                                    <div href="#" class="badge bg-primary bg-opacity-10 text-primary mb-2 fw-bold">@j</div>
+                                                  </li>
+                                               }
+                          
+                                            </ul>  
+                                        }
+                              
+                                    }
+                            <!-- Tags END -->
+                          <div class="row g-4 mx-auto">
+                              <div class="col-lg-6">
+                                  <i class="bi bi-chat-fill text-primary"></i> @item.Commentaires.Count() commentaires
+                              </div>
+                              <div class="col-lg-6">
+                                  <i class="bi bi-exclamation-triangle-fill text-warning"></i> Signalé @item.Signals.Count() fois
+                              </div>
+                             @* @if(!(item is Sujet && item.Commentaires.Count() > 0))
+                              {
+                                  <div class="col-lg-6">
+                                      <a class="btn btn-danger-soft" onclick="confirmer(@item.Id,'@item.Titre')" >Supprimer</a>
+                                  </div>
+                               }
+                              <div class="col-lg-6">
+                                  <a class="btn btn-primary-soft" asp-action="Modifier">Modifier</a>
+                              </div>*@
+                          </div>
+                          <script>
+                            function confirmer(id,titre)
+                            {
+                               
+                                if(confirm("Confirmer la suppression du contenu "+titre))
+                                {
+                                    window.location.replace("/Membres/Supprime?id="+id);
+                                }
+                            }
+                        </script>
+                          
+                           @*<div class="bg-light p-4 w-50 popup">
+                             <div class="row g-4">
+                                <div class="col-sm-6 col-lg-12">
+                             
+                                   <p class="text-body mb-2">Confirmer la suppression du contenu <b>@item.Titre</b></p>@item.Id
+                                     <div class="col-lg-12 row">
+                                       <div class="col-6"><p class="btn btn-sm btn-primary-soft mb-0" onclick="toggle()">Retour</p> </div>
+                                       <div class="col-6"><button asp-action="Supprime" asp-route-id = "@item.Id" class="btn btn-sm btn-danger-soft mb-0">Confirmer</button></div>
+                                     </div>
+                    
+                                </div>
+                                      <!-- Card News END -->
+                             </div>
+                           </div>*@
+                        </div>
+                        <!-- Card feed item END -->
+                      </div>
+                        
+                      
+                   }
+                 </div>
+                  
+                  @*<!-- Load more replies -->
+                        <a href="#!" role="button" class="btn btn-link btn-link-loader btn-sm text-secondary d-flex align-items-center mb-3 ms-5" data-bs-toggle="button" aria-pressed="true">
+                          <div class="spinner-dots me-2">
+                            <span class="spinner-dot"></span>
+                            <span class="spinner-dot"></span>
+                            <span class="spinner-dot"></span>
+                          </div>
+                          Load more replies 
+                        </a>
+                        <!-- Comment item nested END -->*@
+                </div>
+              </div>
+            </div>
+        </div>
+

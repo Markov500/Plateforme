@@ -1,0 +1,148 @@
+.elt
+{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+.icone
+{
+    
+    position: absolute;
+    display: block;
+    line-height: 25px;
+    text-align: center;
+    transition: 0.5s;
+    border-radius: 30%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+li:hover a .texte
+{
+    transform: translateY(30px);
+}
+
+.texte
+{
+   position: relative;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    transition: 0.5s;
+    /*background-color:rgba(255, 255, 255, 0.959);
+    padding: 0.5px;
+    border-radius:10%;*/
+    width: 120px;
+}
+
+li:hover a .icone
+{
+    opacity: 1;
+}
+
+.popup
+{
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    
+   
+    
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.5s;
+    border-radius: 25px;
+}
+
+    .popup.active {
+        visibility: visible;
+        opacity: 1;
+        transition: 0.5s;
+        z-index: 100;
+    }
+
+#corps.active
+{
+   /* filter: blur(5px);*/
+    pointer-events: none;
+    user-select: none;
+    z-index : 0;
+}
+
+.signal
+{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.signalIcon
+{
+    
+    position: absolute;
+    display: block;
+    line-height: 25px;
+    font-size: 20px;
+    font-weight: 30px;
+    text-align: center;
+    transition: 0.5s;
+    border-radius: 30%;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.signal:hover  .signalText
+{
+    transform: translateX(35px);
+}
+
+.signalText
+{
+   position: relative;
+    font-weight: 400px;
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    transition: 0.5s;
+    border-radius:20px;
+    width: 78px;
+}
+
+.signal:hover  .signalIcon
+{
+    opacity: 1;
+}
+
+.titre
+{
+    font-weight: bold;
+    font-size : 35px;
+    padding-left: 20px;
+    border-left: 10px solid royalblue;
+    background-color: rgba(255, 255, 0, 0.25);
+
+}
+.breadcrumb-item
+{
+    font-size: 20px;
+}

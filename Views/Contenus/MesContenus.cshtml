@@ -1,0 +1,156 @@
+﻿@model IEnumerable<plateforme.Models.Contenu>
+
+@{
+     ViewData["Title"] = "Mes contenus";
+    Layout = "_LayoutMembre";
+
+}
+
+
+
+        <div class="card bg-transparent border-0">
+          @if(Model.Count() > 0)
+          {   
+            <div class="col-lg-12">
+              <div class="bg-mode p-4">
+                  <!-- Blog item START -->
+                <div style="height: 70vh; overflow: scroll;">
+                 <div class="row g-4">
+                  <!-- Main content START -->
+                 
+                    @foreach(var item in Model)
+                   {
+
+                   
+                      <div class="col-sm-6 col-lg-4" id="corps">
+                        <!-- Card feed item START -->
+                        <div class="card h-100  p-4">
+                          <h3 class="text-body">@item.Titre</h3>
+                          <!-- Card header END -->
+                          
+                          <p class="text-body mb-2">
+                              @Html.Raw(item.Description)
+                          </p>
+                          @if(item.Ressources != null)
+                            @foreach(var res in item.Ressources)
+                            {
+                                if(res is Fichier)
+                                {
+                                        var i = (Fichier)res;
+                                        if(i.Type == "photo")
+                                        {
+                                            <img class="card-img mb-2" src="@i.Chemin" alt="Post" style="height : 50vh">
+                                        }
+                                        else if (i.Type == "video")
+                                        {
+                                            <div class="overflow-hidden mb-2">
+                                               <video class=" mb-2" controls crossorigin="anonymous">
+                                                 <source src="@i.Chemin" >
+                                               </video>
+                                            </div>
+                                        }
+                                        else if(i .Type == "pdf")
+                                        {
+                                            <a class="mb-2" href="@i.Chemin"><i class="bi bi-file fs-1"></i></a>
+                                        }
+                                
+                                
+                                        }
+                                        else
+                                        {
+                                            var i = (Lien)res;
+                                            <a href="@i.Url">@i.NomRes</a>    
+                                        }
+                            
+                                    }
+          
+                            <!-- Tags START -->
+                                    @if(item is Publication)
+                                    {
+                                        var i = (Publication)item;
+                                        if(i.Tags != null)
+                                        {
+                                             var listTag = i.Tags.Split("#").ToList();
+                                            <ul class="nav nav-stack py-3 small">
+                                               @foreach(var j in listTag)
+                                               {
+                                                   <li class="nav-item">
+                                                    <div href="#" class="badge bg-primary bg-opacity-10 text-primary mb-2 fw-bold">@j</div>
+                                                  </li>
+                                               }
+                          
+                                            </ul>  
+                                        }
+                              
+                                    }
+                            <!-- Tags END -->
+                          <div class="row g-4 mx-auto">
+                              <div class="col-lg-6">
+                                  <i class="bi bi-chat-fill text-primary"></i> @item.Commentaires.Count() commentaires
+                              </div>
+                              <div class="col-lg-6">
+                                  <i class="bi bi-exclamation-triangle-fill text-warning"></i> Signalé @item.Signals.Count() fois
+                              </div>
+                              @if(!(item is Sujet && item.Commentaires.Count() > 0))
+                              {
+                                  <div class="col-lg-6">
+                                                <a class="btn btn-danger-soft" onclick="toggle('item_@item.Id')">Supprimer</a>
+                                  </div>
+                                
+                                  <div class="col-lg-6">
+                                      <a class="btn btn-primary-soft" asp-route-id="@item.Id" asp-action="ModifierContenu">Modifier</a>
+                                  </div>
+                              }
+                          </div>
+                          
+                          
+                           @*<div class="bg-light p-4 w-50 popup">
+                             <div class="row g-4">
+                                <div class="col-sm-6 col-lg-12">
+                             
+                                   <p class="text-body mb-2">Confirmer la suppression du contenu <b>@item.Titre</b></p>@item.Id
+                                     <div class="col-lg-12 row">
+                                       <div class="col-6"><p class="btn btn-sm btn-primary-soft mb-0" onclick="toggle()">Retour</p> </div>
+                                       <div class="col-6"><button asp-action="Supprime" asp-route-id = "@item.Id" class="btn btn-sm btn-danger-soft mb-0">Confirmer</button></div>
+                                     </div>
+                    
+                                </div>
+                                      <!-- Card News END -->
+                             </div>
+                           </div>*@
+                        </div>
+                        <!-- Card feed item END -->
+                      </div>
+                            <div class="col-lg-12 bg-light w-50 popup p-5" id="item_@item.Id">
+                                <div class="row g-4">
+                                    <p>
+                                        Confirmer la suppression du contenu <b>@item.Titre</b>
+                                    </p>
+                                    <div class="col-lg-12 row">
+                                        <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('item_@item.Id')">Retour</a> </div>
+                                        <div class="col-6 text-end"><a class="btn btn-sm btn-success-soft mb-0" asp-action="Supprime" asp-controller="Contenus" asp-route-id="@item.Id">Supprimer</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                      
+                   }
+                  
+
+                 </div>
+                  
+               
+                </div>
+              </div>
+            </div>
+            }
+                  else
+                  {
+                      <div class="text-center" >
+                        <div class="my-sm-2 py-sm-2">
+                          <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+                          <h5 class="mt-2 mb-3 text-body">Vous n'avez publié aucun contenu</h5>
+                        </div>
+                      </div>
+                  }
+        </div>
+

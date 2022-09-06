@@ -1,0 +1,877 @@
+﻿@model IEnumerable<plateforme.Models.Publication>
+@{
+    ViewData["Title"] = "Voir les publications";
+    Layout = "_LayoutMembre";
+    string photo = ViewBag.photo;
+    
+}
+<div class="row g-3">
+    <div class="card bg-transparent border-0">
+            
+      <div class="col-lg-12">
+         <div class="bg-mode p-1 mx-auto row g-4 mt-1" >
+            <!-- Nav Search START -->
+            <div class="nav mt-3 mt-lg-0 flex-nowrap align-items-center px-4 px-lg-0 col-lg-6" >
+              <div class="nav-item w-100">
+                <form class="rounded position-relative pull-right" asp-action="Index" asp-controller="Publications" style="width : 60vh">
+                  <input class="form-control ps-5 bg-light" type="search" name="search" placeholder="Rechercher..." aria-label="Search">
+                  <button class="btn bg-transparent px-2 py-0 position-absolute top-50 start-0 translate-middle-y" type="submit"><i class="bi bi-search fs-5"> </i></button>
+                </form>
+              </div>
+            </div>
+            <!-- Nav Search END -->
+             <div class="nav mt-3 mt-lg-0 flex-nowrap align-items-center px-4 px-lg-0 col-lg-3" >
+               <a class="dropdown-item signal" asp-action="MesContenus" asp-controller="Contenus"><i class="bi bi-chat-square-fill fa-fw me-2 signalIcon"></i>  <span class="signalText">Mes contenus</span></a>
+            </div>
+
+             <div class="nav mt-3 mt-lg-0 flex-nowrap align-items-center px-4 px-lg-0 col-lg-3" >
+               <a class="dropdown-item signal" asp-action="Create" asp-controller="Publications"><i class="bi bi-plus fa-fw me-2 fs-2 signalIcon">  </i><span class="signalText">Ajouter</span></a>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    @*<div class="col-lg-12 text-end bg-transparent pull-right">
+         <!-- Nav Search START -->
+        <div class="nav mt-3 mt-lg-0 flex-nowrap align-items-center px-4 px-lg-0" >
+          <div class="nav-item w-100">
+            <form class="rounded position-relative pull-right" asp-action="Index" asp-controller="Publications" style="width : 60vh">
+              <input class="form-control ps-5 bg-light" type="search" name="search" placeholder="Rechercher..." aria-label="Search">
+              <button class="btn bg-transparent px-2 py-0 position-absolute top-50 start-0 translate-middle-y" type="submit"><i class="bi bi-search fs-5"> </i></button>
+            </form>
+          </div>
+        </div>
+        <!-- Nav Search END -->
+    </div>*@
+      <!-- Sidenav START -->
+      <div class="col-lg-3">
+        <!-- Card follow START -->
+        <div class="col-sm-6 col-lg-12">
+          @if(Model.Where(p => p.Type == "event").Count() > 0)
+          {
+                
+            <div class="card"  style="height: 85vh; overflow: scroll;">
+                <!-- Card header START -->
+                <div class="card-header pb-0 border-0">
+                  <h5 class="card-title mb-0 text-center">Les derniers évènements publiés</h5>
+                </div>
+                <!-- Card header END -->
+                <!-- Card body START -->
+                <div class="card-body">
+
+                        @foreach (var item in Model.Where(n => n.Type == "event").ToList())
+                  {
+                        <div class="col-lg-12 bg-light w-50 popup p-5" id="item_@item.Id">
+                            <div class="row g-4">
+                                <p>
+                                    Confirmer le retrait de la publication <b>@item.Titre</b>
+                                </p>
+                                <div class="col-lg-12 row">
+                                    <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('item_@item.Id')">Retour</a> </div>
+                                    <div class="col-6 text-end"><a class="btn btn-sm btn-success-soft mb-0" asp-action="Supprime" asp-controller="Contenus" asp-route-id="@item.Id">Supprimer</a></div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                                <div class="row">
+                                    <h6 class="mb-0 col-10">@Html.DisplayFor(modelItem => item.Titre)</h6>
+                                    <div class="dropdown text-end col-2">
+                                        <a href="#" class="text-secondary btn btn-secondary-soft-hover py-1 px-2" id="cardFeedAction" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </a>
+                                        <!-- Card signal action  -->
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cardFeedAction">
+                                            @if (item.Signals.Where(p => p.MembreId == ViewBag.membre.Id).Count() == 0)
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item signal" asp-route-id="@item.Id" asp-action="Signaler" asp-controller="Membres">
+                                                        <i class="bi bi-exclamation-triangle-fill signalIcon text-warning"></i> <span class="signalText">Signaler</span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            <!-- Card retirer action -->
+                                            @if (ViewBag.membre.Profil == "moderateur" || ViewBag.membre.Profil == "superadmin")
+                                            {
+                                                <li>
+                                                    <a href="#" class="dropdown-item signal" onclick="toggle('item_@item.Id')">
+                                                        <i class="bi bi-trash-fill signalIcon text-danger"></i><span class="signalText">Retirer</span>
+                                                    </a>
+                                                    
+                                                </li>
+
+                                                <!-- Card Avertir action -->
+                                                <li>
+                                                    <a class="dropdown-item signal" asp-route-id="@item.MembreId" target="_blank" asp-action="Avertir" asp-controller="Moderateurs">
+                                                        <i class="bi bi-hand-thumbs-down-fill signalIcon text-primary"></i><span class="signalText">Avertir</span>
+                                                    </a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                    @if (item.Description.Length > 101)
+                                    {
+                                        <p>
+                                            <a class="text-body" asp-action="Details" asp-route-id="@item.Id">
+                                                @Html.Raw(item.Description.Substring(0,100))...
+                                                Voir plus
+                                            </a>
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            <a class="text-body" title="consulter" asp-action="Details" asp-route-id="@item.Id">
+                                                @Html.Raw(item.Description)
+                                            </a>
+                                        </p>
+                                    }
+                                    <div class="row">
+                                      <div class="col-12"><small class="fw-bold">Début:    <i class="bi bi-calendar-day"></i> @DateFormat.AffichageDate( item.DateDeb)</small></div>
+                                      <div class="col-12"><small class="fw-bold">Fin:      <i class="bi bi-calendar-day"></i> @DateFormat.AffichageDate(item.DateFin)</small></div>
+                                      <div class="col-12">
+                                      <small class="fw-bold">  
+                                          <i class="bi bi-person-fill"></i> 
+                                        @if(item.Membre.Mail == ViewBag.membre.Mail)
+                                        {
+                                            <span class="nav-item card-title mb-0">Moi</span>
+                                        }
+                                        else if(item.Membre.Etat == "supprime")
+                                        {
+                                            <span>Compte supprimé</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="nav-item card-title mb-0">@Html.DisplayFor(modelItem => item.Membre.Nom) @Html.DisplayFor(modelItem => item.Membre.Prenom)</span>
+                                        }
+                                   
+                                      </small></div>
+                      
+                                    </div>
+                            
+                                <hr>
+                            
+                  
+                  }
+              
+                  <!-- View more button -->
+                  @*<div class="d-grid mt-3">
+                    <a class="btn btn-sm btn-primary-soft" href="#!">View more</a>
+                  </div>*@
+                </div>
+                <!-- Card body END -->
+            </div>
+          }
+          else
+          {
+              <div class="text-center"  style="height: 85vh;">
+                <div class="my-sm-2 py-sm-2">
+                  <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+                  <h5 class="mt-2 mb-3 text-body">Aucun évènement accessible</h5>
+                </div>
+              </div>
+          }
+        </div>
+        <!-- Card follow START -->
+      </div>
+      <!-- Sidenav END -->
+
+      <!-- Main content START -->
+       
+        @*#####################################################################################################################################
+        #####################################################################################################################################
+        #####################################################################################################################################
+        ##################################################LA COLLONNE DU MILIEU DU BODY######################################################
+        #####################################################################################################################################
+        #####################################################################################################################################
+        #####################################################################################################################################*@
+       
+      <div class="col-md-8 col-lg-6 vstack gap-4" style="height: 85vh; overflow: scroll;">
+        
+           @if(Model.Where(p => p.Type == "pub").Count() > 0)
+           {
+              @foreach(var item in Model.Where(p => p.Type == "pub").ToList())
+            {
+                <div class="col-lg-12 bg-light w-50 popup p-5" id="item_@item.Id">
+                    <div class="row g-4">
+                        <p>
+                            Confirmer le retrait de la publication <b>@item.Titre</b>
+                        </p>
+                        <div class="col-lg-12 row">
+                            <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('item_@item.Id')">Retour</a> </div>
+                            <div class="col-6 text-end"><a class="btn btn-sm btn-success-soft mb-0" asp-action="Supprime" asp-controller="Contenus" asp-route-id="@item.Id">Supprimer</a></div>
+                        </div>
+                    </div>
+                </div>
+                
+                    <!-- Card feed item START -->
+                    <div class="card" >
+                      <!-- Card header START -->
+          
+                      <div class="card-header border-0 pb-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="d-flex align-items-center">
+                            <!-- Avatar -->
+                            <div class="avatar avatar-story me-2">
+                                 @if(item.Membre.Etat == "supprime")
+                                 {
+                                     <img class="avatar-img rounded-circle" src="@photo" alt="">
+                                 }
+                                 else
+                                 {
+                                     <img class="avatar-img rounded-circle" src="@item.Membre.PhotoProfil" alt="">
+                                 }
+                           
+                            </div>
+                            <!-- Info -->
+                            <div>
+                              <div class="nav nav-divider">
+                                   @if(item.Membre.Mail == ViewBag.membre.Mail)
+                                    {
+                                        <h6 class="nav-item card-title mb-0">Moi</h6>
+                                    }
+                                    else if(item.Membre.Etat == "supprime")
+                                    {
+                                        <h6>Compte supprimé</h6>
+                                    }
+                                    else
+                                    {
+                                        <h6 class="nav-item card-title mb-0">@Html.DisplayFor(modelItem => item.Membre.Nom) @Html.DisplayFor(modelItem => item.Membre.Prenom)</h6>
+                                    }
+                            
+                               <span class="nav-item small">
+                                  @item.AffichageDate()
+                               </span>
+                              </div>
+                              <p class="mb-0 small">@Html.DisplayFor(modelItem => item.Membre.Poste)</p>
+                            </div>
+                          </div> 
+                          <!-- Card feed action dropdown START -->
+                          <div class="dropdown">
+                            <a href="#" class="text-secondary btn btn-secondary-soft-hover py-1 px-2" id="cardFeedAction" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </a>
+                            <!-- Card signal action  -->
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cardFeedAction">
+                                @if(item.Signals.Where(p => p.MembreId == ViewBag.membre.Id).Count() == 0)
+                                {
+                                  <li> 
+                                     <a class="dropdown-item signal" asp-route-id="@item.Id" asp-action="Signaler" asp-controller="Membres">
+                                         <i class="bi bi-exclamation-triangle-fill signalIcon text-warning"></i> <span class="signalText">Signaler</span> 
+                                     </a>
+                                  </li>
+                                }
+                          
+                              <!-- Card retirer action -->
+                              @if(ViewBag.membre.Profil == "moderateur" || ViewBag.membre.Profil == "superadmin")
+                              {
+                                    <li> 
+                                        <a href="#" class="dropdown-item signal" onclick="toggle('item_@item.Id')">
+                                            <i class="bi bi-trash-fill signalIcon text-danger"></i><span class="signalText">Retirer</span>
+                                        </a>
+                                        
+                                    </li> 
+                                
+                                    <!-- Card Avertir action -->
+                                      <li> 
+                                        <a class="dropdown-item signal" asp-route-id="@item.MembreId" target="_blank" asp-action="Avertir" asp-controller="Moderateurs">
+                                          <i class="bi bi-hand-thumbs-down-fill signalIcon text-primary"></i><span class="signalText">Avertir</span>
+                                        </a>
+                                      </li>
+                              }
+            
+                            </ul>
+                          </div>
+                        <!-- Card feed action dropdown END -->
+                        </div>
+            
+                      </div>
+                      <!-- Card header END -->
+                      <!-- Card body START -->
+                      <div class="card-body">
+                        <h2>@Html.DisplayFor(modelItem => item.Titre)</h2>
+                        <p class=" text-body mt-2 mb-1">@Html.Raw(item.Description)</p>
+                        <!-- Card img -->
+                        @if(item.Ressources != null)
+                        @foreach(var res in item.Ressources)
+                        {
+                            if(res is Fichier)
+                            {
+                                    var i = (Fichier)res;
+                                    if(i.Type == "photo")
+                                    {
+                                        <img class="card-img mb-2" src="@i.Chemin" alt="Post" style="height : 50vh">
+                                    }
+                                    else if (i.Type == "video")
+                                    {
+                                        <div class="overflow-hidden mb-2">
+                                           <video class=" mb-2" controls crossorigin="anonymous">
+                                             <source src="@i.Chemin" >
+                                           </video>
+                                        </div>
+                                    
+                                    }
+                                    else if(i .Type == "pdf")
+                                    {
+                                        <a href="@i.Chemin"><i class="bi bi-file fs-1"></i></a>
+                                    }
+                                
+                                
+                            }
+                            else
+                            {
+                                var i = (Lien)res;
+                                <a class="mb-2" href="@i.Url">@i.NomRes</a>    
+                            }
+                            
+                        }
+          
+                        <!-- Tags START -->
+                        @if(item.Tags != null)
+                        {
+                            var listTag = item.Tags.Split("#").ToList();
+                       
+
+                            <ul class="nav nav-stack py-3 small">
+                           @foreach(var i in listTag)
+                           {
+                               <li class="nav-item">
+                                <div href="#" class="badge bg-primary bg-opacity-10 text-primary mb-2 fw-bold">@i</div>
+                              </li>
+                           }
+                          
+                            </ul>    
+                        }
+                        <!-- Tags END -->
+
+                        <!-- Add comment -->
+                        <div class="d-flex mb-3 mt-1">
+                          <!-- Comment box  -->
+                          <form class="w-100 row " id="commentForm_@item.Id"  class="needs-validation" novalidate>
+                            <div class="col-11">
+                              <input type="hidden" name="ContenuId" value="@item.Id">
+                              <input type="hidden" name="CommentaireId" value="@null">
+                              <input type="hidden" name="MembreId" value="@ViewBag.membre.Id">
+                              <textarea class="form-control mb-sm-0 mb-3" name="Description" data-autoresize placeholder="Ajouter un commentaire" rows="1"></textarea>
+                            </div>
+                            <div class="col-1">
+                              <button class="btn btn-sm btn-primary-soft " onclick="Comment('commentForm_@item.Id')"><i class="fa-solid fa-paper-plane fs-6"></i></button>
+                            </div>
+                          </form>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-lg-6 mb-3">
+                                <i class="bi bi-chat-fill text-primary"></i> @item.Commentaires.Count() commentaire(s)
+                            </div>
+                            <div class="col-lg-6 text-end mb-3">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i> Signalé @item.Signals.Count() fois
+                            </div>
+                        </div>
+                    
+
+                        <!-- Comment wrap START -->
+                        @if(item.Commentaires.Count() > 0)
+                        {
+                            <div class="comment-wrap list-unstyled"style="height: 20vh; overflow: scroll;" id="commentaire">
+                               @if(item.Commentaires != null)
+                               @foreach(var com in item.Commentaires.OrderBy(c => c.DateEnvoi))
+                                {
+                                    if(com.CommentaireId == null)
+                                    {
+                                        <!-- Comment item START -->
+                                          <div class="comment-item">
+                                            <div class="d-flex position-relative">
+                                              <!-- Avatar -->
+                                              <div class="avatar avatar-xs">
+                                                  @if(com.Membre.Etat == "supprime")
+                                                  {
+                                                      <img class="avatar-img rounded-circle" src="@photo" alt="">
+                                                  }
+                                                  else
+                                                  {
+                                                      <img class="avatar-img rounded-circle" src="@com.Membre.PhotoProfil" alt="">
+                                                  }
+                                        
+                                              </div>
+                                              <div class="ms-2 ">
+                                                <!-- Comment by -->
+                                                <div class="btn-primary-soft rounded-start-top-0 p-3 rounded">
+                                                  <div class="d-flex justify-content-between">
+                                                      <div class="row g-4">
+                                                          <div class="col">
+                                                               @if(ViewBag.membre.Mail == com.Membre.Mail)
+                                                               {
+                                                                 <h6 class="m-0 me-2">Moi</h6>
+                                                               }
+                                                                else if(com.Membre.Etat == "supprime")
+                                                                {
+                                                                    <h6>Compte supprimé</h6>
+                                                                }
+                                                               else
+                                                               {
+                                                                   <h6 class="m-0 me-2">@com.Membre.Nom @com.Membre.Prenom</h6>
+                                                               }
+                                                         
+                                                          </div>
+
+                                                          <div class="col">
+                                                               <span class="nav-item small text-nowrap">
+                                                                  @com.AffichageDate()
+                                                               </span>
+                                                          </div>
+
+                                                      </div>
+                                            
+                                           
+                                                  </div>
+                                                  <p class="small mb-0"> @com.Description</p>
+                                                </div>
+                                                <!-- Comment react -->
+                                                <ul class="nav nav-divider py-2 small">
+                                              
+                                                  <li class="nav-item">
+                                                    <a href="#" class= " nav-link btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse_@com.Id" aria-expanded="false">
+                                                     Répondre
+                                                    </a>
+                                                  </li>
+                                                  <li class="nav-item">
+                                                    <a class="nav-link" href="#!">@com.Reponses.Count() réponse(s)</a>
+                                                  </li>
+                                                </ul>
+                                                <ul class="nav nav-divider py-2 small">
+                                                 <li class="mb-1">
+                                                    <div class="collapse" id="dashboard-collapse_@com.Id"+>
+                                                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                                        <li>
+                                                            <form class="w-100 row" asp-action="CreateComment">
+                                                                <div class="col-10">
+                                                                  <input type="hidden" name="ContenuId" value="@item.Id">
+                                                                  <input type="hidden" name="CommentaireId" value="@com.Id">
+                                                                  <input type="hidden" name="MembreId" value="@ViewBag.membre.Id">
+                                                                  <input class="form-control mb-sm-0 mb-3" name="Description" data-autoresize placeholder="Répondre au commentaire" rows="1"/>
+                                                                </div>
+                                                                <div class="col-1">
+                                                                  <button class="btn btn-sm btn-primary-soft"><i class="fa-solid fa-paper-plane fs-6"></i></button>
+                                                                </div>
+                                                            </form>
+                                                        </li>
+                                                      </ul>
+                                                    </div>
+                                                  </li>
+                                                </ul>
+
+                                              </div>
+                                      
+                                            </div>
+                                               <div class="comment-wrap list-unstyled">
+                                                   @if(com.Reponses != null)
+                                                   @foreach(var elt in com.Reponses.OrderBy(c => c.DateEnvoi))
+                                                    {
+                                                        if(elt.CommentaireId != null)
+                                                        {
+                                                            <!-- Comment item START -->
+                                                              <div class="comment-item" style="margin-left:40px">
+                                                                <div class="d-flex position-relative">
+                                                                  <!-- Avatar -->
+                                                                  <div class="avatar avatar-xs">
+                                                                      @if(elt.Membre.Etat == "supprime")
+                                                                       {
+                                                                           <img class="avatar-img rounded-circle" src="@photo" alt="">
+                                                                       }
+                                                                       else
+                                                                       {
+                                                                           <img class="avatar-img rounded-circle" src="@elt.Membre.PhotoProfil" alt="">
+                                                                       }
+                                                            
+                                                                  </div>
+                                                                  <div class="ms-2">
+                                                                    <!-- Comment by -->
+                                                                    <div class="btn-success-soft rounded-start p-3 rounded mb-2" >
+                                                                      <div class="d-flex justify-content-between">
+                                                                        @if(ViewBag.membre.Mail == elt.Membre.Mail)
+                                                                          {
+                                                                            <h6 class="m-0 me-2">Moi</h6>
+                                                                          }
+                                                                           else if(elt.Membre.Etat == "supprime")
+                                                                            {
+                                                                                <h6>Compte supprimé</h6>
+                                                                            }
+                                                                          else
+                                                                          {
+                                                                              <h6 class="m-0 me-2">@elt.Membre.Nom @elt.Membre.Prenom</h6>
+                                                                          }
+                                                                        <span class="nav-item small text-nowrap">
+                                                                            @elt.AffichageDate()
+                                                                       </span>
+                                                                      </div>
+                                                                      <p class="small mb-0"> @elt.Description</p>
+                                                                    </div>
+                                                                    <!-- Comment react -->
+                                                    
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                              
+                                                              <!-- Comment item END -->
+                                                        }
+                            
+                            
+                                         
+                                                    }
+                      
+                                               </div>
+                                          </div>
+                              
+                                          <!-- Comment item END -->
+                                  
+                                    }
+                            
+                            
+                              
+                              
+                                }
+                      
+                            </div>
+                        }
+                            @*<!-- Load more replies -->
+                            <a href="#!" role="button" class="btn btn-link btn-link-loader btn-sm text-secondary d-flex align-items-center mb-3 ms-5" data-bs-toggle="button" aria-pressed="true">
+                              <div class="spinner-dots me-2">
+                                <span class="spinner-dot"></span>
+                                <span class="spinner-dot"></span>
+                                <span class="spinner-dot"></span>
+                              </div>
+                              Load more replies 
+                            </a>
+                            <!-- Comment item nested END -->*@
+             
+                      
+              
+           
+                        <!-- Comment wrap END -->
+                      </div>
+                      <!-- Card body END -->
+                      <!-- Card footer START -->
+                      @*<div class="card-footer border-0 pt-0">
+                        <!-- Load more comments -->
+                        <a href="#!" role="button" class="btn btn-link btn-link-loader btn-sm text-secondary d-flex align-items-center" data-bs-toggle="button" aria-pressed="true">
+                          <div class="spinner-dots me-2">
+                            <span class="spinner-dot"></span>
+                            <span class="spinner-dot"></span>
+                            <span class="spinner-dot"></span>
+                          </div>
+                          Load more comments 
+                        </a>
+                      </div>*@
+                      <!-- Card footer END -->
+                    </div>
+                    <!-- Card feed item END -->
+                
+            }
+           }
+           else
+          {
+              <div class="text-center">
+                <div class="my-sm-2 py-sm-2">
+                  <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+                  <h5 class="mt-2 mb-3 text-body">Aucune publication accessible</h5>
+                </div>
+              </div>
+          }
+          <!-- Load more button START -->
+          @*<a href="#!" role="button" class="btn btn-loader btn-primary-soft" data-bs-toggle="button" aria-pressed="true">
+            <span class="load-text"> Load more </span>
+            <div class="load-icon">
+              <div class="spinner-grow spinner-grow-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </a>*@
+          <!-- Load more button END -->
+
+      </div>
+      <!-- Main content END -->
+
+
+<!--
+#############################################################################################################
+############################################################################################################
+#############################################################################################################
+###################################LA COLONNE DE DROITE DU BODY#############################################
+############################################################################################################
+#############################################################################################################
+##########################################################################################################
+-->
+
+
+
+      <!-- Right sidebar START -->
+      <div class="col-lg-3">
+        <div class="row g-2">
+          <!-- Card follow START -->
+          @if(Model.Where(p => p.Type == "note").Count() > 0)
+          {
+              <div class="col-sm-6 col-lg-12" >
+                <div class="card" style="height :35vh ; overflow: scroll;"  >
+                  <!-- Card header START -->
+                  <div class="card-header pb-0 border-0">
+                    <h5 class="card-title mb-0">Les notes de service</h5>
+                  </div>
+                  <!-- Card header END -->
+              
+                  <!-- Card body START -->
+                  @foreach(var item in Model.Where(n => n.Type == "note").ToList())
+                  {
+                            <div class="col-lg-12 bg-light w-50 popup p-5" id="item_@item.Id">
+                                <div class="row g-4">
+                                    <p>
+                                        Confirmer le retrait de la note de service <b>@item.Titre</b>
+                                    </p>
+                                    <div class="col-lg-12 row">
+                                        <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('item_@item.Id')">Retour</a> </div>
+                                        <div class="col-6 text-end"><a class="btn btn-sm btn-success-soft mb-0" asp-action="Supprime" asp-controller="Contenus" asp-route-id="@item.Id">Supprimer</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                      
+                          <div class="card-body" >
+                            <!-- News item -->
+                        
+                              <div class="mb-3 row">
+                                <h6 class="mb-0 col-10">@Html.DisplayFor(modelItem => item.Titre)</h6>
+                                <div class="dropdown text-end col-2">
+                                     <a href="#" class="text-secondary btn btn-secondary-soft-hover py-1 px-2" id="cardFeedAction" data-bs-toggle="dropdown" aria-expanded="false">
+                                         <i class="bi bi-three-dots-vertical"></i>
+                                     </a>
+                                     <!-- Card signal action  -->
+                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cardFeedAction">
+                                         @if (item.Signals.Where(p => p.MembreId == ViewBag.membre.Id).Count() == 0)
+                                         {
+                                             <li>
+                                                 <a class="dropdown-item signal" asp-route-id="@item.Id" asp-action="Signaler" asp-controller="Membres">
+                                                     <i class="bi bi-exclamation-triangle-fill signalIcon text-warning"></i> <span class="signalText">Signaler</span>
+                                                 </a>
+                                             </li>
+                                         }
+
+                                         <!-- Card retirer action -->
+                                         @if (ViewBag.membre.Profil == "moderateur" || ViewBag.membre.Profil == "superadmin")
+                                         {
+                                             <li>
+                                                 <a href="#" class="dropdown-item signal" onclick="toggle('item_@item.Id')">
+                                                     <i class="bi bi-trash-fill signalIcon text-danger"></i><span class="signalText">Retirer</span>
+                                                 </a>
+                                                 
+                                             </li>
+
+                                             <!-- Card Avertir action -->
+                                             <li>
+                                                 <a class="dropdown-item signal" asp-route-id="@item.MembreId" target="_blank" asp-action="Avertir" asp-controller="Moderateurs">
+                                                     <i class="bi bi-hand-thumbs-down-fill signalIcon text-primary"></i><span class="signalText">Avertir</span>
+                                                 </a>
+                                             </li>
+                                         }
+
+                                     </ul>
+                                </div>
+                                @if (item.Description.Length > 101)
+                                {
+                                    <p>
+                                        <a class="text-body" asp-action="Details" asp-route-id="@item.Id">
+                                            @Html.Raw(item.Description.Substring(0,100))...
+                                            Voir plus
+                                        </a>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p>
+                                        <a class="text-body" title="consulter" asp-action="Details" asp-route-id="@item.Id">
+                                            @Html.Raw(item.Description)
+                                        </a>
+                                    </p>
+                                }
+                                @item.AffichageDate()
+                              </div>
+                       
+                            <hr>
+                          </div>
+                            
+                      
+
+                  }
+                  </div>
+                  <!-- Card body END -->
+                </div>
+          }
+          else
+          {
+              <div class="text-center"  style="height: 35vh;">
+                <div class="my-sm-2 py-sm-2">
+                  <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+                  <h5 class="mt-2 mb-3 text-body">Aucune note de service accessible</h5>
+                </div>
+              </div>
+          }
+          <!-- Card follow START -->
+
+          <!-- Card News START -->
+          <div class="col-sm-6 col-lg-12" style="height: 35vh; overflow: scroll;">
+            @if (Model.Where(p => p.Type == "annonce").Count() > 0)
+            {
+              <div class="card" >
+                  <!-- Card header START -->
+                  <div class="card-header pb-0 border-0">
+                      <h5 class="card-title mb-0">Les annonces</h5>
+                  </div>
+                  <!-- Card header END -->
+
+                  <!-- Card body START -->
+                  @foreach (var item in Model.Where(p => p.Type == "annonce").ToList())
+                  {
+                            <div class="col-lg-12 bg-light w-50 popup p-5" id="item_@item.Id">
+                                <div class="row g-4">
+                                    <p>
+                                        Confirmer le retrait de l'annonce <b>@item.Titre</b>
+                                    </p>
+                                    <div class="col-lg-12 row">
+                                        <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('item_@item.Id')">Retour</a> </div>
+                                        <div class="col-6 text-end"><a class="btn btn-sm btn-success-soft mb-0" asp-action="Supprime" asp-controller="Contenus" asp-route-id="@item.Id">Supprimer</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                          <div class="card-body">
+                              <!-- News item -->
+
+                              <div class="mb-3 row ">
+                          
+                                  <h6 class="mb-0 col-10">@Html.DisplayFor(modelItem => item.Titre)</h6>
+                                  <div class="dropdown text-end col-2">
+                                     <a href="#" class="text-secondary btn btn-secondary-soft-hover py-1 px-2" id="cardFeedAction" data-bs-toggle="dropdown" aria-expanded="false">
+                                         <i class="bi bi-three-dots-vertical"></i>
+                                     </a>
+                                     <!-- Card signal action  -->
+                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="cardFeedAction">
+                                         @if (item.Signals.Where(p => p.MembreId == ViewBag.membre.Id).Count() == 0)
+                                         {
+                                             <li>
+                                                 <a class="dropdown-item signal" asp-route-id="@item.Id" asp-action="Retirer" asp-controller="Moderateurs">
+                                                     <i class="bi bi-exclamation-triangle-fill signalIcon text-warning"></i> <span class="signalText">Signaler</span>
+                                                 </a>
+                                             </li>
+                                         }
+
+                                         <!-- Card retirer action -->
+                                         @if (ViewBag.membre.Profil == "moderateur" || ViewBag.membre.Profil == "superadmin")
+                                         {
+                                             <li>
+                                                 <a href="#" class="dropdown-item signal" onclick="toggle('item_@item.Id')">
+                                                     <i class="bi bi-trash-fill signalIcon text-danger"></i><span class="signalText">Retirer</span>
+                                                 </a>
+                                                 @*<script>
+                                                     function confirmer(id, titre) {
+
+                                                         if (confirm("Confirmer le retrait du contenu " + titre)) {
+                                                             window.location.replace("/Moderateurs/Retirer?id=" + id);
+                                                         }
+                                                     }
+                                                 </script>*@
+                                             </li>
+
+                                             <!-- Card Avertir action -->
+                                             <li>
+                                                 <a class="dropdown-item signal" asp-route-id="@item.MembreId" target="_blank" asp-action="Avertir" asp-controller="Moderateurs">
+                                                     <i class="bi bi-hand-thumbs-down-fill signalIcon text-primary"></i><span class="signalText">Avertir</span>
+                                                 </a>
+                                             </li>
+                                         }
+
+                                     </ul>
+                                  </div>
+
+                                  @if (item.Description.Length > 101)
+                                  {
+                                      <p>
+                                          <a class="text-body" asp-action="Details" asp-route-id="@item.Id">
+                                              @Html.Raw(item.Description.Substring(0,100))...
+                                              Voir plus
+                                          </a>
+                                      </p>
+                                  }
+                                  else
+                                  {
+                                      <p>
+                                          <a class="text-body" title="consulter" asp-action="Details" asp-route-id="@item.Id">
+                                              @Html.Raw(item.Description)
+                                          </a>
+                                      </p>
+                                  }
+
+
+                                  <small>@item.AffichageDate()</small>
+                              </div>
+
+                                    <hr>
+                          </div>
+                      
+
+                  }
+              </div>
+            }
+            else
+            {
+              <div class="text-center"  style="height: 35vh;">
+                <div class="my-sm-2 py-sm-2">
+                  <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+                  <h5 class="mt-2 mb-3 text-body">Aucune annonce accessible</h5>
+                </div>
+              </div>
+            }
+            </div>
+          </div>
+          <!-- Card News END -->
+        </div>
+      </div>
+      <!-- Right sidebar END -->
+                 
+
+ 
+<!-- Main return START -->
+    <div class="d-none d-lg-block">
+      <!-- Button -->
+      <a class="icon-md btn btn-primary position-fixed end-0 bottom-0 me-5 mb-5" asp-action="Create" >
+        <i class="bi bi-plus fs-4"></i>
+      </a>
+    </div>
+<!-- Main return END -->
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+    function Comment(id) {
+        var data = $("#"+id).serialize();
+        console.log(data);
+        alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("CreateComment")',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                
+                alert('Successfully received Data ');
+                console.log(result);
+            },
+            error: function () {
+                alert("@Url.Action("CreateComment")");
+                alert('Failed to receive the Data');
+                console.log('Failed ');
+            }
+        });
+        $("#commentaire").load("#commentaire")
+    }
+
+</script>
+}

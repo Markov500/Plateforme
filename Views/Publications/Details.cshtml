@@ -1,0 +1,308 @@
+﻿@model plateforme.Models.Publication
+@{
+     ViewData["Title"] = Model.Titre;
+   string photo = ViewBag.photo;
+    Layout = "_LayoutMembre";
+}
+
+    <div class="row g-4">
+      <!-- Main content START -->
+      <div class="col-lg-8 mx-auto">
+        <div class="vstack gap-4">
+          <!-- Blog single START -->
+          <div class="card card-body">
+            
+            <!-- Card feed item START -->
+          
+            <h3 class="text-body mb-1">@Model.Titre</h3>
+
+            <div class="text-body mb-1">@Html.Raw(Model.Description)</div>
+            <!-- Card header END -->
+            @if(Model.Ressources != null)
+            @foreach(var item in Model.Ressources)
+            {
+                if(item is Fichier)
+                {
+                    var i = (Fichier)item;
+                    if(i.Type == "photo")
+                    {
+                        <img class="card-img mb-1" src="@i.Chemin" alt="Post">
+                    }
+                    else if (i.Type == "video")
+                    {
+                        <div class="overflow-hidden fullscreen-video w-100 mb-1">
+
+                        <!-- HTML video START -->
+                             <div class=" overflow-hidden mb-2">
+                               <video class="mb-2" controls crossorigin="anonymous">
+                                 <source src="@i.Chemin" >
+                               </video>
+                             </div>
+                        <!-- HTML video END -->
+            
+                        <!-- Plyr resources and browser polyfills are specified in the pen settings -->
+                        </div>
+                    }
+                    else if(i .Type == "pdf")
+                    {
+                        <a href="@i.Chemin"><i class="bi bi-file fs-1"></i></a>
+                    }
+                }
+                if(item is Lien)
+                {
+                    var i = (Lien)item;
+                  <a class="mb-1" href="@i.Url">@i.Url</a>  
+                }
+
+            
+            }
+            <!-- Card body START -->
+            <div class="card-body">
+              <!-- Info -->
+              
+              @if(Model.Type == "event")
+              {
+                  <div class="row g-5">
+                      <div class="col-6"><small class="fw-bold">Début: <i class="bi bi-calendar-day"></i> @Html.DisplayFor(modelItem => Model.DateDeb)</small></div>
+                            <div class="col-6">@if(Model.DateFin != null){ <small class="fw-bold">Fin: <i class="bi bi-calendar-day"></i> @Html.DisplayFor(modelItem => Model.DateFin) </small>
+                                    } 
+                                    else { 
+                                        <small class="fw-bold">Fin: <i class="bi bi-calendar-month"></i> Indéfini </small> }</div>
+                        </div>
+              }
+              
+              <!-- Feed react START -->
+              
+               <div class="row">
+                 
+                 <div class="col-6">
+                   
+                 </div>
+               </div>
+              <!-- Feed react END -->
+            </div>
+            <!-- Card body END -->
+          @if(ViewBag.membre.Mail == Model.Membre.Mail)
+          {
+            <div class="text-body">
+                  <h6>Créé par moi</h6>
+            </div>
+
+           
+          }
+          else if(Model.Membre.Etat == "supprime")
+          {
+             <h6>Compte créateur supprimé</h6>
+          }
+          else
+          {
+              <div class="text-body">
+                  <h6>Créé par @Model.Membre.Nom @Model.Membre.Prenom</h6>
+              </div>
+          }
+          <div class="col-lg-6 mb-3">
+               <i class="bi bi-exclamation-triangle-fill text-warning"></i> Signalé @Model.Signals.Count() fois
+           </div>
+          </div>
+          <!-- Card END -->
+          <div class="card bg-primary bg-opacity-10 text-primary text-center fw-bold" style="font-size: 30px;">
+            COMMENTAIRES 
+          </div>
+          <!-- Comments START -->
+          <div class="card">
+            <div class="card-header pb-0 border-0">
+            </div>
+            <div class="card-body">
+              <!-- Comments START -->
+              @if(Model.Commentaires != null)
+              @foreach(var item in Model.Commentaires.OrderBy(c => c.DateEnvoi))
+              {
+                  
+                 if(item.CommentaireId == null)
+                 {
+                     <!-- Comment level 1-->
+                      <div class="my-4 d-flex">
+                        <img class="avatar avatar-md rounded-circle float-start me-3" src="@item.Membre.PhotoProfil" alt="@item.Membre.Username">
+                        <div >
+                        <div class="btn-primary-soft p-3 rounded">
+                              <div class="mb-2 d-sm-flex">
+                                  @if(ViewBag.membre.Mail == item.Membre.Mail)
+                                  {
+                                    <h6 class="m-0 me-2">Moi</h6>
+                                  }
+                                  else if(item.Membre.Etat == "supprime")
+                                  {
+                                     <h6>Compte supprimé</h6>
+                                  }
+                                  else
+                                  {
+                                      <h6 class="m-0 me-2">@item.Membre.Nom @item.Membre.Prenom</h6>
+                                  }
+                                
+                                <span class="nav-item small">
+                                     @if(item.DateEnvoi.Day == DateTime.Now.Day )
+                                     {
+                                        if( DateTime.Now.Hour - item.DateEnvoi.Hour > 0)
+                                        {
+                                            var i = DateTime.Now.Hour - item.DateEnvoi.Hour;
+                                            <small>Il y a @i heures</small>    
+                                        }
+
+                                        else if( DateTime.Now.Minute - item.DateEnvoi.Minute > 0)
+                                        {
+                                            var i = DateTime.Now.Minute - item.DateEnvoi.Minute;
+                                            <small>Il y a @i minutes</small>   
+
+                                        }
+
+                                        else
+                                        {
+                                        <small>Maintenant</small>  
+                                        }
+                                       
+                                     }
+
+                                     else if(DateTime.Now.Day - item.DateEnvoi.Day == 1)
+                                     {
+                                        var min = (item.DateEnvoi.Minute <10)? "0"+item.DateEnvoi.Minute : ""+item.DateEnvoi.Minute;
+                                        var sec = (item.DateEnvoi.Second <10)? "0"+item.DateEnvoi.Second : ""+item.DateEnvoi.Second;
+                                        var heure =(item.DateEnvoi.Hour <10)? "0"+item.DateEnvoi.Hour : ""+item.DateEnvoi.Hour;
+                                        <small>Hier à @heure:@min:@sec</small>
+                                     }
+
+                                     else
+                                     {
+                                        <small>le @item.DateEnvoi</small>
+                                     }
+                                </span>
+                              </div>
+                              <p >@item.Description</p>
+                        </div>
+                       
+                          <a href="#" class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse_@item.Id" aria-expanded="false">
+                                 Répondre
+                          </a>
+                        
+                          <div class="collapse" id="dashboard-collapse_@item.Id">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                              <li>
+                                  <form class="w-100 row" asp-action="CreateComment">
+                                      <div class="col-10">
+                                        <input type="hidden" name="ContenuId" value="@Model.Id">
+                                        <input type="hidden" name="CommentaireId" value="@item.Id">
+                                        <input type="hidden" name="MembreId" value="@ViewBag.membre.Id">
+                                        <input type="text" class="form-control mb-sm-0 mb-3" name="Description"  placeholder="Répondre au commentaire"/>
+                                      </div>
+                                      <div class="col-1">
+                                        <button class="btn btn-sm btn-primary-soft"><i class="fa-solid fa-paper-plane fs-6"></i></button>
+                                      </div>
+                                  </form>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>  
+                           
+                       @if(item.Reponses != null)
+                      @foreach(var elt in item.Reponses.OrderBy(c => c.DateEnvoi))
+                      {
+                          <!-- Comment children level 3 -->
+                          <div class="my-4 d-flex ps-3 ps-md-5" style="margin-left:70px">
+                            <img class="avatar avatar-md rounded-circle float-start me-3" src="@elt.Membre.PhotoProfil" alt="@elt.Membre.Username">
+                            <div class="btn-success-soft p-3 rounded">
+                              <div class="mb-2 d-sm-flex">
+                                @if(ViewBag.membre.Mail == elt.Membre.Mail)
+                                  {
+                                    <h6 class="m-0 me-2">Moi</h6>
+                                  }
+                                  else if(elt.Membre.Etat == "supprime")
+                                  {
+                                     <h6>Compte supprimé</h6>
+                                  }
+                                  else
+                                  {
+                                      <h6 class="m-0 me-2">@elt.Membre.Nom @elt.Membre.Prenom</h6>
+                                  }
+                                 <span class="nav-item small">
+                                     @if(elt.DateEnvoi.Day == DateTime.Now.Day )
+                                     {
+                                        if( DateTime.Now.Hour - elt.DateEnvoi.Hour > 0)
+                                        {
+                                            var i = DateTime.Now.Hour - elt.DateEnvoi.Hour;
+                                            <small>Il y a @i heures</small>    
+                                        }
+
+                                        else if( DateTime.Now.Minute - elt.DateEnvoi.Minute > 0)
+                                        {
+                                            var i = DateTime.Now.Minute - elt.DateEnvoi.Minute;
+                                            <small>Il y a @i minutes</small>   
+
+                                        }
+
+                                        else
+                                        {
+                                        <small>Maintenant</small>  
+                                        }
+                                       
+                                     }
+
+                                     else if(DateTime.Now.Day - elt.DateEnvoi.Day == 1)
+                                     {
+                                        var min = (elt.DateEnvoi.Minute <10)? "0"+elt.DateEnvoi.Minute : ""+elt.DateEnvoi.Minute;
+                                        var sec = (elt.DateEnvoi.Second <10)? "0"+elt.DateEnvoi.Second : ""+elt.DateEnvoi.Second;
+                                        var heure =(elt.DateEnvoi.Hour <10)? "0"+elt.DateEnvoi.Hour : ""+elt.DateEnvoi.Hour;
+                                        <small>Hier à @heure:@min:@sec</small>
+                                     }
+
+                                     else
+                                     {
+                                        <small>le @elt.DateEnvoi</small>
+                                     }
+                                 </span>
+                              </div>
+                              <p >@elt.Description</p>
+                            </div>
+                          </div>
+                      }
+                 }
+              }
+             
+              
+              
+              
+              <!-- Comments END -->
+              <hr class="my-4">
+              <!-- Réponde START -->
+              <div>
+                <h4>Donner votre avis</h4>
+                <form class="row g-3 mt-2" asp-action="CreateComment">
+                 
+                  <input type="hidden" name="ContenuId" value="@Model.Id">
+                  <input type="hidden" name="CommentaireId" value="@null">
+                  <input type="hidden" name="MembreId" value="@ViewBag.membre.Id">
+                  <textarea class="form-control mb-sm-0 mb-3" id="champ" name="Description" data-autoresize placeholder="Laissez un commentaire" autoresize></textarea>
+                  
+                  <!-- Button -->
+                  <div class="col-12" style="text-align: right;">
+                    <button type="submit" class="btn btn-success-soft text-end">Envoyer</button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Réponde END -->
+              
+            </div>
+          </div>
+          <!-- Blog single END -->
+        </div>
+      </div>
+      <!-- Main content END -->
+    </div> <!-- Row END -->
+    <!-- Main return START -->
+    <div class="d-none d-lg-block">
+      <!-- Button -->
+      <a class="icon-md btn btn-primary position-fixed end-0 bottom-0 me-5 mb-5" asp-action="Index" asp-controller="Publications" >
+        <i class="bi bi-arrow-left fs-3 "></i>
+      </a>
+    </div>
+    <!-- Main return END -->

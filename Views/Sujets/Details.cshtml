@@ -1,0 +1,282 @@
+﻿@model plateforme.Models.Sujet
+@{
+     ViewData["Title"] = Model.Titre;
+   
+    Layout = "_LayoutMembre";
+    string photo = ViewBag.photo;
+}
+<div class="col-lg-12  mt-3 " >
+    <nav style="--bs-breadcrumb-divider: '►';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          
+          <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Sujets">Les sujets accessibles</a></li>
+          <li class="breadcrumb-item active" aria-current="page">@Model.Titre</li>
+        </ol>
+    </nav>
+</div>
+<!--====================== Breadcrumb END =========================================-->
+    <div class="row g-4">
+      <!-- Main content START -->
+      <div class="col-lg-8 mx-auto">
+        <div class="vstack gap-4">
+          <!-- Blog single START -->
+          <div class="card card-body">
+            
+            <!-- Card feed item START -->
+          
+            <h3 class="text-body">@Model.Titre</h3>
+            <!-- Card header END -->
+            <div class="text-body">@Html.DisplayFor(m=> Model.Description)</div>
+            @if(Model.Ressources != null)
+            @foreach(var item in Model.Ressources)
+            {
+                if(item is Fichier)
+                {
+                    var i = (Fichier)item;
+                    if(i.Type == "photo")
+                    {
+                        <img class="card-img" src="@i.Chemin" alt="Post">
+                    }
+                    else if (i.Type == "video")
+                    {
+                        <div class="overflow-hidden fullscreen-video w-100 mb-1">
+
+                        <!-- HTML video START -->
+                             <div class=" overflow-hidden mb-2">
+                               <video class="mb-2" controls crossorigin="anonymous">
+                                 <source src="@i.Chemin" >
+                               </video>
+                             </div>
+                        <!-- HTML video END -->
+            
+                        <!-- Plyr resources and browser polyfills are specified in the pen settings -->
+                        </div>
+                    }
+                    
+                    else if(i .Type == "pdf")
+                    {
+                        <a href="@i.Chemin"><i class="bi bi-file fs-1"></i></a>
+                    }
+                }
+                if(item is Lien)
+                {
+                    var i = (Lien)item;
+                  <a href="@i.Url">@i.NomRes</a>   
+                }
+                
+            
+            }
+            <!-- Card body START -->
+            <div class="card-body">
+              <!-- Info -->
+              
+              <!-- Feed react START -->
+              
+               <div class="row">
+                 
+                 <div class="col-6">
+                   
+                 </div>
+               </div>
+              <!-- Feed react END -->
+            </div>
+            <!-- Card body END -->
+          @if(ViewBag.membre.Mail == Model.Membre.Mail)
+          {
+            <div class="text-body">
+                  <h6>Créé par moi</h6>
+            </div>
+
+            @if(!Model.Cloture)
+            {
+              <div class="text-end">
+                  <a onclick="toggle('popup')" class="btn btn-danger-soft ">
+                      Clôturer
+                  </a>
+              </div>
+            }
+          }
+          else if(Model.Membre.Etat == "supprime")
+          {
+             <h6>Compte créateur supprimé</h6>
+          }
+          else
+          {
+              <div class="text-body">
+                  <h6>Créé par @Model.Membre.Nom @Model.Membre.Prenom</h6>
+              </div>
+          }
+
+           <div class="col-lg-6 mb-3">
+               <i class="bi bi-exclamation-triangle-fill text-warning"></i> Signalé @Model.Signals.Count() fois
+           </div>
+          
+          </div>
+          <!-- Card END -->
+          <div class="card bg-primary bg-opacity-10 text-primary text-center fw-bold" style="font-size: 30px;">
+            LES AVIS 
+          </div>
+          <!-- Comments START -->
+          <div class="card">
+            <div class="card-header pb-0 border-0">
+            </div>
+            <div class="card-body">
+              <!-- Comments START -->
+              @if(Model.Commentaires != null)
+              @foreach(var item in Model.Commentaires.OrderBy(c => c.DateEnvoi))
+              {
+                  
+                 if(item.CommentaireId == null)
+                 {
+                     <!-- Comment level 1-->
+                      <div class="my-4 d-flex">
+                          @if(item.Membre.Etat == "supprime")
+                          {
+                             <img class="avatar avatar-md rounded-circle float-start me-3" src="@photo" alt="@item.Membre.Username">
+                          }
+                          else
+                          {
+                              <img class="avatar avatar-md rounded-circle float-start me-3" src="@item.Membre.PhotoProfil" alt="@item.Membre.Username">
+                          }
+                        
+                        <div >
+                        <div class="btn-primary-soft p-3 rounded">
+                              <div class="mb-2 d-sm-flex">
+                                  @if(ViewBag.membre.Mail == item.Membre.Mail)
+                                  {
+                                    <h6 class="m-0 me-2">Moi</h6>
+                                  }
+                                  else if(item.Membre.Etat == "supprime")
+                                  {
+                                     <h6 class="m-0 me-2">Compte supprimé</h6>
+                                  }
+                                  else
+                                  {
+                                      <h6 class="m-0 me-2">@item.Membre.Nom @item.Membre.Prenom</h6>
+                                  }
+                                
+                                <span class="nav-item small">
+                                     @item.AffichageDate()
+                                </span>
+                              </div>
+                              <p >@Html.Raw(item.Description)</p>
+                        </div>
+                        @if(!Model.Cloture)
+                        {
+                          <a href="#" class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse_@item.Id" aria-expanded="false">
+                                 Répondre
+                          </a>
+                        }
+                          <div class="collapse" id="dashboard-collapse_@item.Id">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                              <li>
+                                  <form class="w-100 row" asp-action="CreateComment">
+                                      <div class="col-10">
+                                        <input type="hidden" name="ContenuId" value="@Model.Id">
+                                        <input type="hidden" name="CommentaireId" value="@item.Id">
+                                        <input type="hidden" name="MembreId" value="@ViewBag.membre.Id">
+                                        <input type="text" class="form-control mb-sm-0 mb-3" name="Description"  placeholder="Répondre au commentaire"/>
+                                      </div>
+                                      <div class="col-1">
+                                        <button class="btn btn-sm btn-primary-soft"><i class="fa-solid fa-paper-plane fs-6"></i></button>
+                                      </div>
+                                  </form>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>  
+                           
+                       @if(item.Reponses != null)
+                      @foreach(var elt in item.Reponses.OrderBy(c => c.DateEnvoi))
+                      {
+                          <!-- Comment children level 3 -->
+                          <div class="my-4 d-flex ps-3 ps-md-5" style="margin-left:70px">
+                              @if(item.Membre.Etat == "supprime")
+                              {
+                                 <img class="avatar avatar-md rounded-circle float-start me-3" src="@photo" alt="@elt.Membre.Username">
+                              }
+                              else
+                              {
+                                  <img class="avatar avatar-md rounded-circle float-start me-3" src="@elt.Membre.PhotoProfil" alt="@elt.Membre.Username">
+                              }
+                            
+                            <div class="btn-success-soft p-3 rounded">
+                              <div class="mb-2 d-sm-flex">
+                                @if(ViewBag.membre.Mail == elt.Membre.Mail)
+                                  {
+                                    <h6 class="m-0 me-2">Moi</h6>
+                                  }
+                                  else if(elt.Membre.Etat == "supprime")
+                                  {
+                                     <h6 class="m-0 me-2">Compte supprimé</h6>
+                                  }
+                                  else
+                                  {
+                                      <h6 class="m-0 me-2">@elt.Membre.Nom @elt.Membre.Prenom</h6>
+                                  }
+                                 <span class="nav-item small">
+                                     @elt.AffichageDate()
+                                 </span>
+                              </div>
+                              <p >@Html.Raw(elt.Description)</p>
+                            </div>
+                          </div>
+                      }
+                 }
+              }
+             
+              
+              
+              @if(!Model.Cloture)
+              {
+              <!-- Comments END -->
+              <hr class="my-4">
+              <!-- Réponde START -->
+              <div>
+                <h4>Donner votre avis</h4>
+                <form class="row g-3 mt-2" asp-action="CreateComment">
+                 
+                  <input type="hidden" name="ContenuId" value="@Model.Id">
+                  <input type="hidden" name="CommentaireId" value="@null">
+                  <input type="hidden" name="MembreId" value="@ViewBag.membre.Id">
+                  <textarea class="form-control mb-sm-0 mb-3" name="Description" id="champ" data-autoresize placeholder="Entrez votre réponses" autoresize></textarea>
+                  
+                  <!-- Button -->
+                  <div class="col-12" style="text-align: right;">
+                    <button type="submit" class="btn btn-success-soft text-end">Envoyer l'avis</button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Réponde END -->
+              }
+            </div>
+          </div>
+          <!-- Blog single END -->
+        </div>
+      </div>
+      <!-- Main content END -->
+    </div> <!-- Row END -->
+    <!-- Main return START -->
+    <div class="d-none d-lg-block">
+      <!-- Button -->
+      <a class="icon-md btn btn-primary position-fixed end-0 bottom-0 me-5 mb-5" asp-action="Index" asp-controller="Sujets" >
+        <i class="bi bi-arrow-left fs-3 "></i>
+      </a>
+    </div>
+    <!-- Main return END -->
+<div class="col-lg-12 bg-light w-50 popup" id="popup">
+   <div class="row g-4">
+     <div class="col-sm-6 col-lg-12 p-5 w-30 mx-auto">
+      
+       <p>Veuillez confirmer la clôture du sujet</p>
+         <div class="col-lg-12 row">
+           <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle('popup')">Retour</a> </div>
+           <div class="col-6 text-end"><button asp-action="Cloturer" asp-controller="Sujets" asp-route-id="@Model.Id" class="btn btn-sm btn-success-soft mb-0">Confirmer</button></div>
+         </div>
+                    
+     </div>
+     <!-- Card News END -->
+   </div>
+</div>

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<plateforme.Models.Membre>
+
+@{
+     ViewData["Title"] = "Liste des membres";
+    Layout = "_LayoutSuperadmin";
+
+}
+
+
+
+@if(Model.Count() > 0)
+{
+
+
+   <div class="card bg-transparent border-0">
+            
+       <div class="col-lg-12">
+           <div class="bg-mode p-4">
+                 
+             <!-- Blog item START -->
+            <div style="height: 70vh; overflow: scroll;">
+               <hr>
+             @foreach(var item in Model)
+                  {     
+                    <!-- ========================= membre START ================================= -->
+                    <div class="row g-3">
+                        <div class="col-1">
+                            <!-- Blog image -->
+                           <img class="avatar-img rounded-circle" src="@item.PhotoProfil" alt="">
+                        </div>
+                        <div class="col-8">
+                            <a class="text-body" asp-action="Details" asp-route-id="@item.Id" title="voir les publications qui ont été signalés">
+                                <!-- Blog caption -->
+                                <h5>@item.Nom @item.Prenom</h5>
+                                <div class="d-none d-sm-inline-block">
+                                    <p class="mb-2">
+                                        <i class="bi bi-house-door-fill"></i>@item.Departement.NomDept
+                                        <i class="bi bi-person-fill"></i>@item.Poste
+                                    </p>
+                                    <!-- BLog date -->
+                                    <span class="small text-secondary" href="#!"> <i class="bi bi-exclamation-triangle-fill text-danger"></i>@item.Avertissements.Count()  avertissements</span>
+                                    <span class="small text-secondary" href="#!"> <i class="bi bi-exclamation-triangle-fill text-warning"></i>@item.Contenus.Where(p => p.Signals.Count() > 0).Count() contenus signalés</span>
+                    
+                                </div>
+                            </a>
+                        </div>
+            
+
+                      <div class="col-2">
+                       
+                          
+                          <a asp-action="Avertir" asp-route-id="@item.Id"   asp-controller="Moderateurs" class="btn btn-danger-soft">Avertir</a>
+                
+                      </div>
+                    </div>
+                    <!--========================= membre END =================================-->
+                      <hr>
+                  }
+                  
+           </div>
+           </div>
+       </div>
+   </div>
+}
+else
+{
+   <div class="text-center">
+     <div class="my-sm-2 py-sm-2">
+       <i class="display-1 text-muted bi bi-file-earmark-x"> </i>
+       <h5 class="mt-2 mb-3 text-body">Aucun utilisateur disponible</h5>
+     </div>
+   </div>
+}

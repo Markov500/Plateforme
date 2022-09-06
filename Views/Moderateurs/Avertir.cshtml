@@ -1,0 +1,93 @@
+﻿@model plateforme.Models.Avertissement
+
+@{
+     ViewData["Title"] = "Liste des membres";
+    Layout = "_LayoutSuperadmin";
+
+}
+
+
+
+          <div class="card bg-transparent border-0">
+            
+            <div class="col-lg-12">
+                <div class="bg-mode p-4">
+                  <h1 class="h4 mb-4">Avertir un membre</h1>
+                  <!-- Blog item START -->
+                 <div style="height: 70vh; overflow: scroll;">
+                    <form class="row g-3" asp-action="Avertir">
+                      <div class="row g-3 card-body" id="corps">
+                        <!-- Objet -->
+                        <div class="row mb-4">
+                            <div class="col-3">
+                              <label class="form-label">Saisir l'objet</label>
+                            </div>
+                            <div class="col-9">
+                                <input name="objet" class="form-control" placeholder="Entrer l'objet de votre message">
+                            </div>
+                        
+
+                            <!-- Note d'avertissement -->
+                            <div class="col-12">
+                              <label class="form-label">Saisir la note d'avertissement</label>
+                              <textarea asp-for="Note"  class="form-control" id="champs"></textarea>
+                              <span asp-validation-for="Note" id="noteErreur" class="small text-danger"></span>
+                            </div>
+
+                            <!-- Membre -->
+                             <input asp-for="MembreId" type="hidden">
+
+                             <!-- Moérateur -->
+                             <input asp-for="ModerateurId" type="hidden">
+                           
+                            <!-- Button  -->
+                            <div class="col-6 mt-4">
+                              <input type="reset" class="btn btn-sm btn-danger-soft mb-0" value="Annuler">
+                            </div>
+                            <!-- Button  -->
+                            <div class="col-6 text-end mt-4">
+                              <div class="btn btn-sm btn-primary-soft mb-0" onclick="Valider()">Valider</div> 
+                            </div>
+                        </div>
+  
+                      </div>
+                      <div class="row mb-4">
+                          
+                          <div class="col-8 mx-auto">
+                            <h6 class="small text-danger">@ViewBag.erreur</h6>
+                          </div>
+                        </div>
+                      <div class="col-lg-12 bg-light w-50" id="popup" style="margin-left : 70px">
+                         <div class="row g-4">
+                           <div class="col-sm-6 col-lg-12 p-3 w-75 mx-auto">
+                             
+                             <p>Veuillez confirmer l'envoi de la note d'avertissement </p>
+                               <div class="col-lg-12 row">
+                                 <div class="col-6"><a class="btn btn-sm btn-danger-soft mb-0" onclick="toggle()">Retour</a> </div>
+                                 <div class="col-6 text-end"><button class="btn btn-sm btn-success-soft mb-0">Confirmer</button></div>
+                                     </div>
+                    
+                           </div>
+                            <!-- Card News END -->
+                         </div>
+                      </div>
+                    </form>
+                  
+                 </div>
+                </div>
+            </div>
+        </div>
+
+ <script>
+     function Valider() {
+    document.getElementById('noteErreur').innerHTML = "";
+    if (document.getElementById('champs').value == "") {
+        document.getElementById('noteErreur').innerHTML = "Un avertissemennt ne peut être envoyé sans note d'avertissement";
+        
+    }
+    else {
+        
+        toggle();
+    }
+}
+ </script>

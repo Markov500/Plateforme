@@ -1,0 +1,204 @@
+﻿@model plateforme.Models.ViewModels.CreateMembreVM
+
+@{
+    ViewData["Title"] = "Ajouter un compte";
+    Layout = "_LayoutSuperadmin";
+}
+
+        <div class="col-lg-12 ">
+            <div class="row g-4">
+              <div class="col-sm-6 col-lg-12">
+                <div class="card">
+                  <!-- Card header START -->
+                  <div class="card-header pb-0 border-0">
+                    <h5 class="card-title mb-0">Ajouter un compte</h5>
+                  </div>
+                  <!-- Card header END -->
+                  <!-- Card body START -->
+                  <div class="card-body">
+                    <!-- Form settings START -->
+                    <p class="text-body">
+                        NB : Les champs marqués du signe <span class="text-danger">*</span> sont obligatoires
+                    </p>
+                    
+                    <form class="" asp-action="Create">
+                      <div class=" card-body" id="corps">
+
+                          <!-- Nom -->
+                        <div class="row mb-4">
+                          <div class="col-3">
+                            <label asp-for="Nom" class="control-label"></label><span class="text-danger">*</span>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Nom" class="form-control" id="nom" placeholder="Saisissez son nom">
+                            <span asp-validation-for="Nom" id="nomErreur" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+                        <!-- Prenom -->
+                        <div class="row mb-4">
+                          <div class="col-3">
+                            <label asp-for="Prenom" class="control-label"></label>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Prenom" id="prenom" class="form-control"  placeholder="Saisissez ses prenom(s)">
+                             <span asp-validation-for="Prenom" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+
+                        <!-- Adresse mail -->
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            <label asp-for="Mail"  class="control-label"></label><span class="text-danger">*</span>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Mail" id="mail" class="form-control" placeholder="Saisissez son adresse mail" >
+                             <span asp-validation-for="Mail" id="mailErreur" class="small text-danger"></span>
+                          </div>
+                        </div>
+                      
+
+                         <!-- Poste -->
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            <label asp-for="Poste" class="control-label"></label><span class="text-danger">*</span>
+                          </div>
+                          <div class="col-8">
+                            <input asp-for="Poste" class="form-control" id="poste" placeholder="Saisissez son poste" >
+                             <span asp-validation-for="Poste" id="posteErreur" class="small text-danger"></span>
+                          </div>
+                        </div>
+
+
+                        <!-- Profil-->
+                          <div class="row g-4 mb-4">
+                            <div class="col-lg-3">
+                              <label asp-for="Profil" class="control-label"></label><span class="text-danger">*</span>
+                            </div>
+                            @if(ViewBag.membre.Profil == "superadmin")
+                                {
+                                    <div class="col-lg-3">
+                                      <input class="form-check-input"  type="radio" name="profil" id="" value="admin"> Administrateur
+                                    </div>
+                                }
+                                <div class="col-lg-3">
+                              <input class="form-check-input"  type="radio" name="profil" id="" value="moderateur"> Modérateur
+                            </div>
+                            <div class="col-lg-3">
+                              <input class="form-check-input"  type="radio" name="profil" id="" value="membre"> Membre
+                            </div>
+                            <div class="col-lg-19 text-center">
+                                <span asp-validation-for="Profil" id="profilErreur" class="small text-danger"></span>
+                            </div> 
+                          </div>
+                        @if(ViewBag.membre.Profil == "superadmin"){
+                         <!-- Departement -->
+                         <div class="row mb-4">
+                          <div class="col-3">
+                            <label asp-for="CodeDept" class="form-label">Département</label><span class="text-danger">*</span>
+                          </div>
+                          <div class="col-8">
+                            <select asp-for="CodeDept" id="dept" class="form-control" asp-items="@ViewBag.CodeDept">
+                                <option value="@null">Veuillez choisir un département</option>
+                            </select>
+                            <span asp-validation-for="CodeDept" id="deptErreur" class="text-danger"></span>
+                          </div>
+                        </div>
+                        }
+                        else{
+                            <input asp-for="CodeDept" type="hidden"  value="@ViewBag.membre.DepartementId" >
+                        }
+                        <div class="row mb-4">
+                          
+                          <div class="col-8 mx-auto">
+                            <h6 class="small text-danger">@ViewBag.erreur</h6>
+                          </div>
+                        </div>
+                        <!-- Button  -->
+
+                        <div class="row mb-4 ">
+                          <div class="col-3">
+                            <input type="reset" class="btn btn-sm btn-danger-soft mb-0" value="Annuler">
+                          </div>
+                          <div class="col-8 text-end">
+                            <div class="btn btn-sm btn-primary-soft mb-0" onclick="Valider()">Valider</div> 
+                          </div>
+                        </div>
+                      </div>
+                     
+                      <div class="col-lg-12 bg-light w-50 p-4 mx-auto" id="popup" style="margin-left : 100px"> 
+                        <div class="row g-4">
+                           <div class="col-sm-6 col-lg-12">
+                              <p>
+                                  Veuillez confirmer l'ajout du compte : <br/>
+                                  NOM : <b id="nomPrev"></b><br />
+                                  PRENOM : <b id="prenomPrev"></b><br />
+                                  EMAIL : <b id="mailPrev"></b><br />
+                                  POSTE : <b id="postePrev"></b><br />
+                                  
+                                  
+                              </p>
+                              
+                              <div class="col-lg-12 row">
+                                <div class="col-6"><p class="btn btn-sm btn-danger-soft mb-0" onclick="toggle()">Retour</p> </div>
+                                <div class="col-6 text-end"><button class="btn btn-sm btn-success-soft mb-0">Confirmer</button></div>
+                              </div>
+                    
+                           </div>
+                                  <!-- Card News END -->
+                        </div>
+                      </div>
+                       
+                    </form>
+                    <!-- Settings END -->
+                  </div>
+                  <!-- Card body END -->
+                </div>
+              </div>
+              <!-- Card News END -->
+            </div>
+          </div>
+          @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    function Valider() {
+        document.getElementById("nomErreur").innerHTML = "";
+        
+        document.getElementById("mailErreur").innerHTML = "";
+        document.getElementById("posteErreur").innerHTML = "";
+        let check = 0;
+
+        if (document.getElementById("nom").value == "") {
+            document.getElementById("nomErreur").innerHTML = "Le champ nom est obligatoire";
+            check = 1;
+        }
+        if (document.getElementById("mail").value == "") {
+            document.getElementById("mailErreur").innerHTML = "Le champ mail est obligatoire";
+            check = 1;
+        }
+        if (document.getElementById("poste").value == "") {
+            document.getElementById("posteErreur").innerHTML = "Le champ poste est obligatoire";
+            check = 1;
+        }
+        if (!document.getElementsByName('profil')[0].checked && !document.getElementsByName('profil')[1].checked &&
+            !document.getElementsByName('profil')[2].checked ) {
+            document.getElementById('profilErreur').innerHTML = "Choisissez le profil de l'utilisateur";
+
+            check = 1;
+        }
+        if (document.getElementById("dept").value == "") {
+            document.getElementById("deptErreur").innerHTML = "Choisissez un département";
+            check = 1;
+        }
+        if (check == 0) {
+            document.getElementById("nomPrev").innerHTML = document.getElementById("nom").value;
+            document.getElementById("prenomPrev").innerHTML = document.getElementById("prenom").value;
+            document.getElementById("mailPrev").innerHTML = document.getElementById("mail").value;
+            document.getElementById("postePrev").innerHTML = document.getElementById("poste").value;
+            toggle();
+        }
+        
+    }
+</script>
